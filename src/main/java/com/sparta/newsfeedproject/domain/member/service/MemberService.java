@@ -2,6 +2,7 @@ package com.sparta.newsfeedproject.domain.member.service;
 
 import com.sparta.newsfeedproject.domain.config.security.PasswordEncoder;
 import com.sparta.newsfeedproject.domain.exception.CustomException;
+import com.sparta.newsfeedproject.domain.exception.eunm.ErrorCode;
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.command.MemberSignUpCommand;
 import com.sparta.newsfeedproject.domain.member.dto.MemberLoginResponseDto;
@@ -59,6 +60,16 @@ public class MemberService {
 
     //본인 프로필 조회
     public MemberProfileResponseDto getMyProfile (Member member) {
+        return new MemberProfileResponseDto(member);
+    }
+
+    //타인 프로필 조회
+    public MemberProfileResponseDto getOtherProfile(Long targetId) {
+        // ID로 회원을 조회
+        Member member = memberRepository.findById(targetId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND)); //ErrorCode enum 사용
+
+        // Member Entity로부터 MemberProfileResponseDto를 생성
         return new MemberProfileResponseDto(member);
     }
 

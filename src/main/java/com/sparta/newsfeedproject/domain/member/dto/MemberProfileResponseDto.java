@@ -16,4 +16,8 @@ public class MemberProfileResponseDto {
         this.phoneNumber = member.getPhoneNumber();
         this.country = member.getCountry();
     }
+
+    public void excludePhoneNumber() {
+        this.phoneNumber = null;
+    }
 }
