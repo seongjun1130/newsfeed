@@ -5,7 +5,6 @@ import com.sparta.newsfeedproject.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter
 @Getter
 @Builder
 @Entity
@@ -13,15 +12,23 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class News extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name ="title", nullable = false,length = 50)
-    private String title;
-    @Column(name ="content", nullable = false,length = 500)
-    private String content;
 
     @ManyToOne
-    @JoinColumn(name="member_id")
-    private Member member;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member author;
+
+    @Column(nullable = false, length = 100)
+    private String title;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    public void updateNews(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
