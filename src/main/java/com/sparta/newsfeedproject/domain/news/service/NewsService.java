@@ -36,6 +36,14 @@ public class NewsService {
         return newsRepository.findAll(pageable).map(this::mapToDTO);
     }
 
+    @Transactional(readOnly = true)
+    public NewsDTO getNews(Long id) {
+        News news = newsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("News not found"));
+        return mapToDTO(news);
+    }
+
+
     private NewsDTO mapToDTO(News news) {
         return NewsDTO.builder()
                 .id(news.getId())

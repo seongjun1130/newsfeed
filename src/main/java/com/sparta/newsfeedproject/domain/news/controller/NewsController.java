@@ -30,4 +30,11 @@ public class NewsController {
         Page<NewsDTO> newsPage = newsService.getAllNews(pageNo, pageSize);
         return ResponseEntity.ok(newsPage);
     }
+
+    // 특정 뉴스 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<NewsDTO> getNews(@PathVariable Long id) {
+        NewsDTO newsDTO = newsService.getNews(id);
+        return ResponseEntity.ok(newsDTO);
+    }
 }
