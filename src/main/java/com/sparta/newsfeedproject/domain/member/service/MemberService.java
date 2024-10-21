@@ -5,6 +5,7 @@ import com.sparta.newsfeedproject.domain.exception.CustomException;
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.command.MemberSignUpCommand;
 import com.sparta.newsfeedproject.domain.member.dto.MemberLoginResponseDto;
+import com.sparta.newsfeedproject.domain.member.dto.MemberProfileResponseDto;
 import com.sparta.newsfeedproject.domain.member.dto.MemberSignUpResponseDto;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.eunm.MembershipStatus;
@@ -54,6 +55,11 @@ public class MemberService {
                 .token(token)
                 .nickName(member.getNickName())
                 .build();
+    }
+
+    //본인 프로필 조회
+    public MemberProfileResponseDto getMyProfile (Member member) {
+        return new MemberProfileResponseDto(member);
     }
 
     private void isDuplicateMember(MemberSignUpCommand command) {
