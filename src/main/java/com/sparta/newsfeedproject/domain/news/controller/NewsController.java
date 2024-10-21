@@ -4,6 +4,7 @@ import com.sparta.newsfeedproject.domain.news.dto.NewsDTO;
 import com.sparta.newsfeedproject.domain.news.service.NewsService;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,5 +20,14 @@ public class NewsController {
     public ResponseEntity<NewsDTO> createNews(@RequestBody NewsDTO newsDTO, @RequestAttribute Member member) {
         NewsDTO createdNews = newsService.createNews(member, newsDTO);
         return ResponseEntity.ok(createdNews);
+    }
+
+    // 뉴스 전체 조회 (페이지네이션 포함)
+    @GetMapping
+    public ResponseEntity<Page<NewsDTO>> getAllNews(
+            @RequestParam(defaultValue = "1") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        Page<NewsDTO> newsPage = newsService.getAllNews(pageNo, pageSize);
+        return ResponseEntity.ok(newsPage);
     }
 }

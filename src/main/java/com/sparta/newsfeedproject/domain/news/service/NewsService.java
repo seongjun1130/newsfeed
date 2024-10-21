@@ -5,6 +5,8 @@ import com.sparta.newsfeedproject.domain.news.entity.News;
 import com.sparta.newsfeedproject.domain.news.repository.NewsRepository;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,12 @@ public class NewsService {
         newsRepository.save(news);
 
         return mapToDTO(news);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<NewsDTO> getAllNews(int pageNo, int pageSize) {
+        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize);
+        return newsRepository.findAll(pageable).map(this::mapToDTO);
     }
 
     private NewsDTO mapToDTO(News news) {
