@@ -28,6 +28,8 @@ public class NewsService {
         return mapToDTO(news);
     }
 
+
+
     @Transactional(readOnly = true)
     public Page<NewsDTO> getAllNews(int pageNo, int pageSize) {
         PageRequest pageable = PageRequest.of(pageNo - 1, pageSize);
