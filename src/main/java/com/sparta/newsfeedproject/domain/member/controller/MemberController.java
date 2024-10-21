@@ -44,6 +44,5 @@ public class MemberController {
     @GetMapping("/index")
     public void test(@LoginUser Member member){
         System.out.println(member.getNickName());
-
     }
 }
