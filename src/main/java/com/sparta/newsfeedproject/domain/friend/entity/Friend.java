@@ -21,5 +21,5 @@ public class Friend {
 
     @ManyToOne
     @JoinColumn(name = "friend_id")
-    private Member friend;
+    private Member friend; //로그인 한 유저의 친구
 }
