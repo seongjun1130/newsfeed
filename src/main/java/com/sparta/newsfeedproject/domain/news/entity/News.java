@@ -21,7 +21,7 @@ public class News extends Auditable {
     @Column(name ="content", nullable = false,length = 500)
     private String content;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name="member_id")
     private Member member;
 }
