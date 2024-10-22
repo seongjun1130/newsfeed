@@ -21,10 +21,6 @@ public class News extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member author;
-
     @Column(nullable = false, length = 100)
     private String title;
 
