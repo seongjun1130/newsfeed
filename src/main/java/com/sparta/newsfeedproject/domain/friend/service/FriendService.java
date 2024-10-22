@@ -52,8 +52,7 @@ public class FriendService {
         Friend friend2 = new Friend(receiver, member);
         friendRepository.save(friend2);
 
-
-        // 친구 요청 테이블에서 요청 삭제
+        // 친구 요청 테이블에서 데이터 삭제
         friendRequestRepository.delete(friendRequest);
     }
 

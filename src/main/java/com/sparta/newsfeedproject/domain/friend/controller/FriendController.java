@@ -1,6 +1,5 @@
 package com.sparta.newsfeedproject.domain.friend.controller;
 
-import com.sparta.newsfeedproject.domain.friend.dto.FriendRequestDto;
 import com.sparta.newsfeedproject.domain.friend.service.FriendService;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
@@ -25,8 +24,6 @@ public class FriendController {
     //친구 수락 API
     @PostMapping("/accept/{receiverId}")
     public ResponseEntity<String> acceptFriendRequest(@LoginUser Member member, @PathVariable Long receiverId) {
-        // member.getId : 로그인 한 회원의 아이디
-        // receiverId : 로그인 한 회원의 친구 요청 목록중 수락 하려하는 회원의 아이디
         friendService.acceptFriendRequest(member, receiverId);
         return ResponseEntity.ok("친구 요청이 수락되었습니다.");
     }

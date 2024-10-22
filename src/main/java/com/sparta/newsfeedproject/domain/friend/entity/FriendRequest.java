@@ -1,6 +1,5 @@
 package com.sparta.newsfeedproject.domain.friend.entity;
 
-import com.sparta.newsfeedproject.domain.friend.enumPac.FriendRequestStatus;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
