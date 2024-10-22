@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.util.List;
 
+
 @Getter
 @Setter
 @Builder
@@ -27,11 +28,17 @@ public class News extends Auditable {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "member_id")
+    // Member 엔티티를 참조하여 게시물 작성자를 저장
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "news", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    // 게시물과 연결된 댓글 목록을 저장 (게시물 삭제 시 댓글도 함께 삭제)
+    @OneToMany(mappedBy = "news", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
+    // 작성자 검증 메소드: 게시물 작성자가 맞는지 확인
+    public boolean isAuthor(Member member) {
+        return this.member.getId().equals(member.getId());
+    }
 }

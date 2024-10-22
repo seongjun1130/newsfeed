@@ -83,9 +83,12 @@ public class NewsService {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
 
-        if (!news.getMember().getId().equals(member.getId())) {
+        // 작성자가 일치하는지 검증
+        if (!news.isAuthor(member)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
+
+        // 작성자가 맞다면 게시물 삭제
         newsRepository.delete(news);
     }
 
@@ -131,5 +134,4 @@ public class NewsService {
                 .modifiedAt(comment.getModifiedAt())  // LocalDateTime 로 변경함
                 .build();
     }
-
 }
