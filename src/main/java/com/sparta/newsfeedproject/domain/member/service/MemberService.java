@@ -89,11 +89,7 @@ public class MemberService {
             throw new CustomException(ALREADY_NICKNAME);
         }
 
-        member.setNickName(requestDto.getNickname());
-        member.setCountry(requestDto.getCountry());
-
         member.update(requestDto.getNickname(), requestDto.getCountry());
-
         memberRepository.save(member);
 
         return new MemberProfileResponseDto(member);
