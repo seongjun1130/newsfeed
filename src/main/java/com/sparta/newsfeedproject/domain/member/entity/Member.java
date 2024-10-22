@@ -50,4 +50,9 @@ public class Member extends Auditable {
         this.setNickName("anonymous_" + this.getNickName() + this.getId());
         this.setStatus(MembershipStatus.INACTIVE);
     }
+
+    public void update(String nickname, String country) {
+        this.nickName = nickname;
+        this.country = country;
+    }
 }

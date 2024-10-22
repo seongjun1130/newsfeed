@@ -8,6 +8,7 @@ import com.sparta.newsfeedproject.domain.member.dto.MemberDeleteRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.MemberLoginResponseDto;
 import com.sparta.newsfeedproject.domain.member.dto.MemberProfileResponseDto;
 import com.sparta.newsfeedproject.domain.member.dto.MemberSignUpResponseDto;
+import com.sparta.newsfeedproject.domain.member.dto.ProfileUpdateRequestDto;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.eunm.MembershipStatus;
 import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
@@ -65,6 +66,39 @@ public class MemberService {
         if (member.isInactive()) {
             throw new CustomException(INACTIVE_MEMBER);
         }
+        return new MemberProfileResponseDto(member);
+    }
+
+    //타인 프로필 조회
+    public MemberProfileResponseDto getOtherProfile(Long targetId) {
+        // ID로 회원을 조회
+        Member member = memberRepository.findById(targetId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND)); //ErrorCode enum 사용
+
+        //회원탈퇴 확인
+        if (member.getStatus() == MembershipStatus.INACTIVE) {
+            throw new CustomException(INACTIVE_MEMBER);
+        }
+
+        // Member Entity로부터 MemberProfileResponseDto를 생성
+        return new MemberProfileResponseDto(member);
+    }
+
+    //프로필 수정
+    @Transactional
+    public MemberProfileResponseDto updateProfile(Member member, ProfileUpdateRequestDto requestDto) {
+        if (!member.isValidPassword(requestDto.getPassword(), passwordEncoder)) {
+            throw new CustomException(INVALID_PASSWORD);
+        }
+
+        if (!member.getNickName().equals(requestDto.getNickname()) &&
+                memberRepository.existsByNickName(requestDto.getNickname())) {
+            throw new CustomException(ALREADY_NICKNAME);
+        }
+
+        member.update(requestDto.getNickname(), requestDto.getCountry());
+        memberRepository.save(member);
+
         return new MemberProfileResponseDto(member);
     }
 

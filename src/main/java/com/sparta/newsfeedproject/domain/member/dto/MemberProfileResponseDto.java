@@ -14,4 +14,8 @@ public class MemberProfileResponseDto {
         this.nickname = member.getNickName();
         this.country = member.getCountry();
     }
+
+    public MemberProfileResponseDto(String nickname) {
+        this.nickname = nickname;
+    }
 }
