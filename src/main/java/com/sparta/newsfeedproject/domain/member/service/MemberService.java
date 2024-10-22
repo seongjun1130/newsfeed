@@ -46,6 +46,9 @@ public class MemberService {
 
     public MemberLoginResponseDto loginMember(String email, String password) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new CustomException(LOGIN_FAILED));
+        if (member.isInactive()) {
+            throw new CustomException(INACTIVE_MEMBER);
+        }
         if (!member.isValidPassword(password, passwordEncoder)) {
             throw new CustomException(LOGIN_FAILED);
         }
@@ -60,7 +63,7 @@ public class MemberService {
     //본인 프로필 조회
     public MemberProfileResponseDto getMyProfile(Member member) {
         if (member.isInactive()) {
-            throw new CustomException(ALREADY_EMAIL);
+            throw new CustomException(INACTIVE_MEMBER);
         }
         return new MemberProfileResponseDto(member);
     }

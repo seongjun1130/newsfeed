@@ -1,6 +1,6 @@
 package com.sparta.newsfeedproject.domain.like.entity;
 
-import com.sparta.newsfeedproject.domain.audit.Auditable;
+import com.sparta.newsfeedproject.domain.comment.entity.Comment;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.news.entity.News;
 import jakarta.persistence.*;
@@ -25,4 +25,8 @@ public class Like {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "news_id")
     private News news;
+
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 }

@@ -5,6 +5,10 @@ import com.sparta.newsfeedproject.domain.config.security.PasswordEncoder;
 import com.sparta.newsfeedproject.domain.member.eunm.MembershipStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -28,6 +32,10 @@ public class Member extends Auditable {
     @Column(name = "status", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private MembershipStatus status;
+    @LastModifiedDate
+    @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime deletedAt;
 
 
     public boolean isValidPassword(String password, PasswordEncoder pwEncoder) {
