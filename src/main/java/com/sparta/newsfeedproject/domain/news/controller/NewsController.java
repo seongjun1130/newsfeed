@@ -59,6 +59,7 @@ public class NewsController {
         return ResponseEntity.ok(updatedNews);
     }
 
+
     // 뉴스 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNews(@PathVariable Long id, @LoginUser Member member) {
