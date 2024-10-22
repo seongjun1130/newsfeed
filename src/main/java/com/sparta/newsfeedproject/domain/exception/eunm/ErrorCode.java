@@ -26,7 +26,6 @@ public enum ErrorCode {
     ALREADY_REQUEST(HttpStatus.CONFLICT, "이미 요청 상태", 409),
     ALREADY_NICKNAME(HttpStatus.CONFLICT, "이미 사용되는 닉네임", 409);
 
-
     private final HttpStatus code;
     private final String message;
     private final int status;
