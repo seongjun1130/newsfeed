@@ -13,6 +13,6 @@ public class NewsRequestDTO {
     @NotBlank(message = "타이틀을 채워야합니다.")
     private String title;
 
-    @NotBlank(message = "content가 채워야합니다.")
+    @NotBlank(message = "content가 채워져야합니다.")
     private String content;
 }
