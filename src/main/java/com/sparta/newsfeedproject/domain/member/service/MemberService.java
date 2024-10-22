@@ -2,7 +2,6 @@ package com.sparta.newsfeedproject.domain.member.service;
 
 import com.sparta.newsfeedproject.domain.config.security.PasswordEncoder;
 import com.sparta.newsfeedproject.domain.exception.CustomException;
-import com.sparta.newsfeedproject.domain.exception.eunm.ErrorCode;
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.command.MemberSignUpCommand;
 import com.sparta.newsfeedproject.domain.member.dto.MemberLoginResponseDto;
@@ -34,7 +33,6 @@ public class MemberService {
                 .email(command.getEmail())
                 .nickName(command.getNickName())
                 .password(password)
-                .phoneNumber(command.getPhoneNumber())
                 .country(command.getCountry())
                 .status(MembershipStatus.ACTIVE)
                 .build();
@@ -69,13 +67,18 @@ public class MemberService {
         Member member = memberRepository.findById(targetId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND)); //ErrorCode enum 사용
 
+        //회원탈퇴 확인
+        if (member.getStatus() == MembershipStatus.WITHDRAWN) {
+            throw new CustomException(WITHDRAWN_MEMBER);
+        }
+
         // Member Entity로부터 MemberProfileResponseDto를 생성
         return new MemberProfileResponseDto(member);
     }
 
     private void isDuplicateMember(MemberSignUpCommand command) {
-        Optional<Member> foundMember = memberRepository.findByEmailOrNickNameOrPhoneNumber(
-                command.getEmail(), command.getNickName(), command.getPhoneNumber()
+        Optional<Member> foundMember = memberRepository.findByEmailOrNickName(
+                command.getEmail(), command.getNickName()
         );
         if (foundMember.isPresent()) {
             Member existingMember = foundMember.get();
@@ -85,10 +88,6 @@ public class MemberService {
 
             if (existingMember.getNickName().equals(command.getNickName())) {
                 throw new CustomException(ALREADY_NICKNAME);
-            }
-
-            if (existingMember.getPhoneNumber().equals(command.getPhoneNumber())) {
-                throw new CustomException(ALREADY_PHONE_NUMBER);
             }
         }
     }

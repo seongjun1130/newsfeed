@@ -52,10 +52,9 @@ public class MemberController {
     }
 
     //타인 프로필 조회
-    @GetMapping("/profil/{id}")
-    public ResponseEntity<MemberProfileResponseDto> getOtherProfile (@PathVariable("id") Long targetId) {
+    @GetMapping("/profil/{targetId}")
+    public ResponseEntity<MemberProfileResponseDto> getOtherProfile (@PathVariable("targetId") Long targetId) {
         MemberProfileResponseDto profile = memberService.getOtherProfile(targetId);
-        profile.excludePhoneNumber();
         return ResponseEntity.ok(profile);
     }
 
