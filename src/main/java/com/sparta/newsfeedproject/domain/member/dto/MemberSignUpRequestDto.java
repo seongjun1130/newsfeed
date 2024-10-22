@@ -22,9 +22,6 @@ public class MemberSignUpRequestDto {
     @Size(min = 8, max = 20, message = "최소 8글자 최대 20글자로 입력해주세요.")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+={}:;\"'<>,.?/\\[\\]\\\\-])[A-Za-z\\d~!@#$%^&*()+|=]+$", message = "영문+숫자+특수문자가 1글자 포함되어야합니다.")
     private String password;
-    @NotBlank(message = "전화번호를 입력해주세요.")
-    @Pattern(regexp = "^\\d{9,15}$", message = "전화번호의 형태가 올바르지 않습니다.")
-    private String phoneNumber;
     @NotBlank(message = "거주 국가를 입력해주세요.")
     @Country(message = "존재하지 않는 국가 이거나 국가명을 영문으로 입력해주세요.")
     private String country;

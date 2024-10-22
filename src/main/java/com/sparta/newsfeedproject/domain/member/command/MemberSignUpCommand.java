@@ -19,7 +19,6 @@ public class MemberSignUpCommand {
         this.email = requestDto.getEmail();
         this.nickName = requestDto.getNickName();
         this.password = requestDto.getPassword();
-        this.phoneNumber = requestDto.getPhoneNumber();
         this.country = requestDto.getCountry();
     }
 }
