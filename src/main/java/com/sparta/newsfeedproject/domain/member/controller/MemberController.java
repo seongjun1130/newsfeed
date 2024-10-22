@@ -57,5 +57,4 @@ public class MemberController {
         MemberProfileResponseDto profile = memberService.getOtherProfile(targetId);
         return ResponseEntity.ok(profile);
     }
-
 }

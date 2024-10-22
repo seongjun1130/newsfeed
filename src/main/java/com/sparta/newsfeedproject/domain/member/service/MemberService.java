@@ -68,8 +68,8 @@ public class MemberService {
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND)); //ErrorCode enum 사용
 
         //회원탈퇴 확인
-        if (member.getStatus() == MembershipStatus.WITHDRAWN) {
-            throw new CustomException(WITHDRAWN_MEMBER);
+        if (member.getStatus() == MembershipStatus.INACTIVE) {
+            throw new CustomException(INACTIVE_MEMBER);
         }
 
         // Member Entity로부터 MemberProfileResponseDto를 생성
