@@ -1,11 +1,14 @@
 package com.sparta.newsfeedproject.domain.friend.controller;
 
+import com.sparta.newsfeedproject.domain.friend.dto.FriendResponseDto;
 import com.sparta.newsfeedproject.domain.friend.service.FriendService;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +32,12 @@ public class FriendController {
     }
 
     //친구 목록 조회 API
+    @GetMapping
+    public ResponseEntity<List<FriendResponseDto>> getFriendList(@LoginUser Member member) {
+        List<FriendResponseDto> friendList = friendService.getFriendList(member);
+        return ResponseEntity.ok(friendList);
+    }
+
 
     //친구 삭제 API
 

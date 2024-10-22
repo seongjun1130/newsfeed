@@ -2,6 +2,7 @@ package com.sparta.newsfeedproject.domain.friend.service;
 
 import com.sparta.newsfeedproject.domain.exception.CustomException;
 import com.sparta.newsfeedproject.domain.exception.eunm.ErrorCode;
+import com.sparta.newsfeedproject.domain.friend.dto.FriendResponseDto;
 import com.sparta.newsfeedproject.domain.friend.entity.Friend;
 import com.sparta.newsfeedproject.domain.friend.entity.FriendRequest;
 import com.sparta.newsfeedproject.domain.friend.repository.FriendRepository;
@@ -11,6 +12,9 @@ import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -53,6 +57,18 @@ public class FriendService {
         friendRequestRepository.delete(friendRequest);
     }
 
+    public List<FriendResponseDto> getFriendList(Member member) {
+
+        //친구 목록 조회
+        List<Friend> friends = friendRepository.findByMember(member);
+
+        //조회된 친구 목록을 DTO로 변환
+        return friends.stream()
+                .map(FriendResponseDto::fromFriend)
+                .collect(Collectors.toList());
+
+    }
+
     private void validateFriendRequest(Long requesterId, Long receiverId, Member requester, Member receiver) {
         // 1. 자신에게 친구 요청을 보내는 경우 예외 처리
         if (requesterId.equals(receiverId)) {
@@ -77,6 +93,7 @@ public class FriendService {
             throw new CustomException(ErrorCode.ALREADY_REQUEST);
         }
     }
+
 
 
 }

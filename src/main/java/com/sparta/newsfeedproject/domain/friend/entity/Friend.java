@@ -3,8 +3,9 @@ package com.sparta.newsfeedproject.domain.friend.entity;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+@Getter
 @Entity
 @Table(name = "friend")
 @NoArgsConstructor
