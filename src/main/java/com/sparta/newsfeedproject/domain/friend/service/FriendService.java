@@ -22,7 +22,7 @@ public class FriendService {
     public void sendFriendRequest(Long requesterId, Long receiverId) {
         // 가입한 회원인지 확인
         Member requester = memberRepository.findById(requesterId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Member receiver = memberRepository.findById(receiverId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
