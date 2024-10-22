@@ -38,10 +38,6 @@ public class MemberController {
                 .status(HttpStatus.OK)
                 .body(response);
     }
-    @GetMapping("/index")
-    public void test(@LoginUser Member member){
-        System.out.println(member.getNickName());
-    }
 
     //본인 프로필 조회
     @GetMapping("/profil")
