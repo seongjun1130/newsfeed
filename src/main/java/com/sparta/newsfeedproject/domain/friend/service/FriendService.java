@@ -2,12 +2,13 @@ package com.sparta.newsfeedproject.domain.friend.service;
 
 import com.sparta.newsfeedproject.domain.exception.CustomException;
 import com.sparta.newsfeedproject.domain.exception.eunm.ErrorCode;
+import com.sparta.newsfeedproject.domain.friend.entity.Friend;
 import com.sparta.newsfeedproject.domain.friend.entity.FriendRequest;
 import com.sparta.newsfeedproject.domain.friend.repository.FriendRepository;
 import com.sparta.newsfeedproject.domain.friend.repository.FriendRequestRepository;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
-import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class FriendService {
     private final FriendRequestRepository friendRequestRepository;
     private final MemberRepository memberRepository;
 
+    @Transactional
     public void sendFriendRequest(Long requesterId, Long receiverId) {
         // 가입한 회원인지 확인
         Member requester = memberRepository.findById(requesterId)
@@ -29,8 +31,30 @@ public class FriendService {
         validateFriendRequest(requesterId, receiverId, requester, receiver);
 
         FriendRequest friendRequest = new FriendRequest();
-        friendRequest.update(requester,receiver);
+        friendRequest.update(requester, receiver);
         friendRequestRepository.save(friendRequest);
+    }
+
+    public void acceptFriendRequest(Member member, Long receiverId) {
+        // 수신자 정보 확인
+        Member receiver = memberRepository.findById(receiverId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 친구 요청이 있는지 확인
+        FriendRequest friendRequest = friendRequestRepository.findByRequesterAndReceiver(receiver, member)
+                .orElseThrow(() -> new CustomException(ErrorCode.REQUEST_NOT_FOUND));
+
+        // 로그인한 회원의 친구목록에 추가
+        Friend friend1 = new Friend(member, receiver);
+        friendRepository.save(friend1);
+
+        // 친구 요청했던 친구의 친구목록에 추가
+        Friend friend2 = new Friend(receiver, member);
+        friendRepository.save(friend2);
+
+
+        // 친구 요청 테이블에서 요청 삭제
+        friendRequestRepository.delete(friendRequest);
     }
 
     private void validateFriendRequest(Long requesterId, Long receiverId, Member requester, Member receiver) {
@@ -57,4 +81,6 @@ public class FriendService {
             throw new CustomException(ErrorCode.ALREADY_REQUEST);
         }
     }
+
+
 }
