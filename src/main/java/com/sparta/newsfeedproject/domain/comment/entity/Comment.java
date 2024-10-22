@@ -22,11 +22,11 @@ public class Comment extends Auditable {
     @Column(name = "comment", nullable = false, length = 100)
     private String comment;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "news_id")
     private News news;
 

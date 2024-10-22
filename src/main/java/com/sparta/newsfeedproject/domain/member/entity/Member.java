@@ -32,11 +32,10 @@ public class Member extends Auditable {
     @Column(name = "status", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private MembershipStatus status;
-    @LastModifiedDate
-    @Column(updatable = false)
+
+    @Column
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime deletedAt;
-
 
     public boolean isValidPassword(String password, PasswordEncoder pwEncoder) {
         return pwEncoder.matches(password, this.password);
@@ -48,6 +47,7 @@ public class Member extends Auditable {
 
     public void anonymizeMember() {
         this.setNickName("anonymous_" + this.getNickName() + this.getId());
+        this.setDeletedAt(LocalDateTime.now());
         this.setStatus(MembershipStatus.INACTIVE);
     }
 

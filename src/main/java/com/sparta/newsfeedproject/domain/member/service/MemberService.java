@@ -1,7 +1,10 @@
 package com.sparta.newsfeedproject.domain.member.service;
 
+import com.sparta.newsfeedproject.domain.comment.repository.CommentRepository;
 import com.sparta.newsfeedproject.domain.config.security.PasswordEncoder;
 import com.sparta.newsfeedproject.domain.exception.CustomException;
+import com.sparta.newsfeedproject.domain.friend.repository.FriendRepository;
+import com.sparta.newsfeedproject.domain.friend.repository.FriendRequestRepository;
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.command.MemberSignUpCommand;
 import com.sparta.newsfeedproject.domain.member.dto.MemberDeleteRequestDto;
@@ -12,6 +15,7 @@ import com.sparta.newsfeedproject.domain.member.dto.ProfileUpdateRequestDto;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.eunm.MembershipStatus;
 import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
+import com.sparta.newsfeedproject.domain.news.repository.NewsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +28,9 @@ import static com.sparta.newsfeedproject.domain.exception.eunm.ErrorCode.*;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final NewsRepository newsRepository;
+    private final FriendRepository friendRepository;
+    private final FriendRequestRepository friendRequestRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -112,8 +119,10 @@ public class MemberService {
             throw new CustomException(LOGIN_FAILED);
         }
         member.anonymizeMember();
-        // 친구관계, 게시글, 좋아요 삭제 예정.
         memberRepository.save(member);
+        newsRepository.deleteByMemberId(member.getId());
+        friendRepository.deleteAllByMemberOrFriend(member.getId());
+        friendRequestRepository.deleteByReceiverIdOrRequesterId(member.getId());
     }
 
     private void isDuplicateMember(MemberSignUpCommand command) {
