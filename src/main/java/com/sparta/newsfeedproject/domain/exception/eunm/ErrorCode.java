@@ -13,14 +13,20 @@ public enum ErrorCode {
     // 401 에러
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "로그인 실패", 401),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰", 401),
+    CANNOT_FRIEND_YOURSELF(HttpStatus.UNAUTHORIZED, "본인에게 친구 요청", 401),
 
     // 404 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저", 404),
+    REQUEST_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 요청 유저", 404),
+    RECEIVER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 수신 유저", 404),
 
     // 409
     ALREADY_EMAIL(HttpStatus.CONFLICT, "이미 사용되는 이메일", 409),
     ALREADY_PHONE_NUMBER(HttpStatus.CONFLICT, "이미 사용되는 전화번호", 409),
+    ALREADY_FRIEND(HttpStatus.CONFLICT, "이미 친구 상태", 409),
+    ALREADY_REQUEST(HttpStatus.CONFLICT, "이미 요청 상태", 409),
     ALREADY_NICKNAME(HttpStatus.CONFLICT, "이미 사용되는 닉네임", 409);
+
 
     private final HttpStatus code;
     private final String message;

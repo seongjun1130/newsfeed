@@ -23,9 +23,8 @@ public class FriendRequest {
     @JoinColumn(name = "receiver_id")
     private Member receiver; // 친구 요청을 받은 유저
 
-    @Enumerated(EnumType.STRING)
-    private FriendRequestStatus status; //친구 요청의 상태 -> PENDING : 요청중
-                                                        //ACCEPTED : 수락됨
-                                                        //REJECTED : 거절됨
-
+    public void update(Member requester, Member receiver) {
+        this.requester = requester;
+        this.receiver = receiver;
+    }
 }

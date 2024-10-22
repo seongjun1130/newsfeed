@@ -2,6 +2,8 @@ package com.sparta.newsfeedproject.domain.friend.controller;
 
 import com.sparta.newsfeedproject.domain.friend.dto.FriendRequestDto;
 import com.sparta.newsfeedproject.domain.friend.service.FriendService;
+import com.sparta.newsfeedproject.domain.member.entity.Member;
+import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +17,8 @@ public class FriendController {
 
     //친구 요청 API
     @PostMapping
-    public ResponseEntity<String> sendFriendRequest(@RequestBody FriendRequestDto requestDto) {
-        friendService.sendFriendRequest(requestDto.getRequesterId(), requestDto.getReceiverId());
+    public ResponseEntity<String> sendFriendRequest(@LoginUser Member member, @RequestBody FriendRequestDto requestDto) {
+        friendService.sendFriendRequest(member.getId(), requestDto.getReceiverId());
         return ResponseEntity.ok("친구 요청이 전송되었습니다.");
     }
 

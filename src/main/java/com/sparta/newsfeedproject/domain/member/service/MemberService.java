@@ -32,7 +32,6 @@ public class MemberService {
                 .email(command.getEmail())
                 .nickName(command.getNickName())
                 .password(password)
-                .phoneNumber(command.getPhoneNumber())
                 .country(command.getCountry())
                 .status(MembershipStatus.ACTIVE)
                 .build();
@@ -57,8 +56,8 @@ public class MemberService {
     }
 
     private void isDuplicateMember(MemberSignUpCommand command) {
-        Optional<Member> foundMember = memberRepository.findByEmailOrNickNameOrPhoneNumber(
-                command.getEmail(), command.getNickName(), command.getPhoneNumber()
+        Optional<Member> foundMember = memberRepository.findByEmailOrNickName(
+                command.getEmail(), command.getNickName()
         );
         if (foundMember.isPresent()) {
             Member existingMember = foundMember.get();
@@ -68,10 +67,6 @@ public class MemberService {
 
             if (existingMember.getNickName().equals(command.getNickName())) {
                 throw new CustomException(ALREADY_NICKNAME);
-            }
-
-            if (existingMember.getPhoneNumber().equals(command.getPhoneNumber())) {
-                throw new CustomException(ALREADY_PHONE_NUMBER);
             }
         }
     }
