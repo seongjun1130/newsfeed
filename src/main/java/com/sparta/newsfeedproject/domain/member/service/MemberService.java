@@ -7,6 +7,7 @@ import com.sparta.newsfeedproject.domain.member.command.MemberSignUpCommand;
 import com.sparta.newsfeedproject.domain.member.dto.MemberLoginResponseDto;
 import com.sparta.newsfeedproject.domain.member.dto.MemberProfileResponseDto;
 import com.sparta.newsfeedproject.domain.member.dto.MemberSignUpResponseDto;
+import com.sparta.newsfeedproject.domain.member.dto.ProfileUpdateRequestDto;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.eunm.MembershipStatus;
 import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
@@ -73,6 +74,24 @@ public class MemberService {
         }
 
         // Member Entity로부터 MemberProfileResponseDto를 생성
+        return new MemberProfileResponseDto(member);
+    }
+
+    //프로필 수정
+    @Transactional
+    public MemberProfileResponseDto updateProfile(Member member, ProfileUpdateRequestDto requestDto) {
+        if (!member.isValidPassword(requestDto.getPassword(), passwordEncoder)) {
+            throw new CustomException(INVALID_PASSWORD);
+        }
+
+        if (!member.getNickName().equals(requestDto.getNickname()) &&
+                memberRepository.existsByNickName(requestDto.getNickname())) {
+            throw new CustomException(ALREADY_NICKNAME);
+        }
+
+        member.update(requestDto.getNickname(), requestDto.getCountry());
+        memberRepository.save(member);
+
         return new MemberProfileResponseDto(member);
     }
 

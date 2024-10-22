@@ -12,7 +12,6 @@ public class MemberSignUpCommand {
     private String email;
     private String nickName;
     private String password;
-    private String phoneNumber;
     private String country;
 
     public MemberSignUpCommand(MemberSignUpRequestDto requestDto) {

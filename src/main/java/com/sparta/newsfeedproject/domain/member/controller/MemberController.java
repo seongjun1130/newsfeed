@@ -57,4 +57,11 @@ public class MemberController {
         MemberProfileResponseDto profile = memberService.getOtherProfile(targetId);
         return ResponseEntity.ok(profile);
     }
+
+    //프로필 수정
+    @PutMapping("/profil")
+    public ResponseEntity<MemberProfileResponseDto> updateProfile(@LoginUser Member member, @Valid @RequestBody ProfileUpdateRequestDto requestDto) {
+        MemberProfileResponseDto updatedProfile = memberService.updateProfile(member, requestDto);
+        return ResponseEntity.ok(new MemberProfileResponseDto(updatedProfile.getNickname()));
+    }
 }

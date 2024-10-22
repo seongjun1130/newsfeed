@@ -13,6 +13,7 @@ public enum ErrorCode {
     // 401 에러
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "로그인 실패", 401),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰", 401),
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.", 401),
     CANNOT_FRIEND_YOURSELF(HttpStatus.UNAUTHORIZED, "본인에게 친구 요청", 401),
 
     // 404 에러
@@ -24,7 +25,6 @@ public enum ErrorCode {
     ALREADY_FRIEND(HttpStatus.CONFLICT, "이미 친구 상태", 409),
     ALREADY_REQUEST(HttpStatus.CONFLICT, "이미 요청 상태", 409),
     ALREADY_NICKNAME(HttpStatus.CONFLICT, "이미 사용되는 닉네임", 409);
-
 
     private final HttpStatus code;
     private final String message;
