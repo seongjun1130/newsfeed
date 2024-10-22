@@ -27,21 +27,21 @@ public class CommentController {
     }
 
     // 댓글 수정하기
-    @PutMapping("")
-    public ResponseEntity<CommentResponseDto> updateComment(@Valid @RequestBody CommentRequestDto requestDto, @PathVariable Long id,@PathVariable Long newsId) {
-        commentService.updateComment(requestDto, id, newsId);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
-    }
-
-    // 댓글 삭제하기
-    @DeleteMapping("/{commentId}")
-    public ResponseEntity<CommentResponseDto> deleteComment(@PathVariable Long newsId, @PathVariable Long commentId) {
-        commentService.deleteComment(newsId, commentId);
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
-}
+//    @PutMapping("")
+//    public ResponseEntity<CommentResponseDto> updateComment(@Valid @RequestBody CommentRequestDto requestDto, @PathVariable Long id,@PathVariable Long newsId) {
+//        commentService.updateComment(requestDto, id, newsId);
+//        return ResponseEntity
+//                .status(HttpStatus.NO_CONTENT)
+//                .build();
+//    }
+//
+//    // 댓글 삭제하기
+//    @DeleteMapping("/{commentId}")
+//    public ResponseEntity<CommentResponseDto> deleteComment(@PathVariable Long newsId, @PathVariable Long commentId) {
+//        commentService.deleteComment(newsId, commentId);
+//        return ResponseEntity
+//                .status(HttpStatus.NO_CONTENT)
+//                .build();
+//}
 
 }

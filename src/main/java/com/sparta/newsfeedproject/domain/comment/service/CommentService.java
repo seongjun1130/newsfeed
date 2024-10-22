@@ -32,18 +32,18 @@ public class CommentService {
         return savedComment.to();
     }
 
-    @Transactional
-    public CommentResponseDto updateComment(CommentRequestDto commentRequestDto, Long memberId, Long commentId) {
-        memberRepository.findById(memberId);
-        Comment comment = commentRepository.findCommentById(commentId);
-        comment.updatedata(commentRequestDto);
-        return new CommentResponseDto(commentId);
-    }
-    @Transactional
-    public void deleteComment(Long memberId, Long commentId) {
-        memberRepository.findById(memberId);
-        commentRepository.findCommentById(commentId);
-        commentRepository.deleteById(commentId);
-    }
+//    @Transactional
+//    public CommentResponseDto updateComment(CommentRequestDto commentRequestDto, Long memberId, Long commentId) {
+//        memberRepository.findById(memberId);
+//        Comment comment = commentRepository.findCommentById(commentId);
+//        comment.updatedata(commentRequestDto);
+//        return new CommentResponseDto(commentId);
+//    }
+//    @Transactional
+//    public void deleteComment(Long memberId, Long commentId) {
+//        memberRepository.findById(memberId);
+//        commentRepository.findCommentById(commentId);
+//        commentRepository.deleteById(commentId);
+//    }
 
 }
