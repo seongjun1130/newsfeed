@@ -63,11 +63,11 @@ public class NewsService {
     }
 
     @Transactional
-    public NewsReadResponseDTO updateNews(Long id, Member author, NewsCreateRequestDTO newsDTO) {
+    public NewsReadResponseDTO updateNews(Long id, Member member, NewsCreateRequestDTO newsDTO) {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
 
-        if (!news.getMember().equals(author)) {
+        if (!news.getMember().equals(member)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
 
@@ -79,11 +79,11 @@ public class NewsService {
     }
 
     @Transactional
-    public void deleteNews(Long id, Member author) {
+    public void deleteNews(Long id, Member member) {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
 
-        if (!news.getMember().equals(author)) {
+        if (!news.getMember().equals(member)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
 
