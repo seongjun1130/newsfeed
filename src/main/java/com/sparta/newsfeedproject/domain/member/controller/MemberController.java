@@ -46,9 +46,15 @@ public class MemberController {
     //본인 프로필 조회
     @GetMapping("/profil")
     //현재 인증된 회원의 정보를 조회
-    public ResponseEntity<Object> getMyProfile (@LoginUser Member member) {
+    public ResponseEntity<MemberProfileResponseDto> getMyProfile (@LoginUser Member member) {
         MemberProfileResponseDto profile = memberService.getMyProfile(member);
         return ResponseEntity.ok(profile);
     }
 
+    //타인 프로필 조회
+    @GetMapping("/profil/{targetId}")
+    public ResponseEntity<MemberProfileResponseDto> getOtherProfile (@PathVariable("targetId") Long targetId) {
+        MemberProfileResponseDto profile = memberService.getOtherProfile(targetId);
+        return ResponseEntity.ok(profile);
+    }
 }
