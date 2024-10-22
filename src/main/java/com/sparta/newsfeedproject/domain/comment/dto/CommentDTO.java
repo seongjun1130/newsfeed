@@ -2,6 +2,8 @@ package com.sparta.newsfeedproject.domain.comment.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -11,5 +13,5 @@ public class CommentDTO {
     private Long id;
     private String comment;
     private String authorNickname;
-    private String createdAt;
+    private LocalDateTime modifiedAt;  // LocalDateTime으로 변경
 }

@@ -77,7 +77,8 @@ public class NewsService {
                 .id(comment.getId())
                 .comment(comment.getComment())
                 .authorNickname(comment.getMember().getNickName())
-                .createdAt(comment.getModifiedAt().toString())  // 변경된 날짜 사용
+                .modifiedAt(comment.getModifiedAt())  // LocalDateTime 로 변경함
                 .build();
     }
+
 }
