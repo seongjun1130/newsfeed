@@ -22,7 +22,7 @@ public class FriendRequest {
     @JoinColumn(name = "receiver_id")
     private Member receiver; // 친구 요청을 받은 유저
 
-    public void update(Member requester, Member receiver) {
+    public void sendRequest(Member requester, Member receiver) {
         this.requester = requester;
         this.receiver = receiver;
     }
