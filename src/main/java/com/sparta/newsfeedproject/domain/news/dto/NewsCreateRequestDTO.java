@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewsRequestDTO {
+public class NewsCreateRequestDTO {
 
     @NotBlank(message = "타이틀을 채워야합니다.")
     private String title;
