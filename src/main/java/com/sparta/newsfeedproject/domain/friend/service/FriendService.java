@@ -93,7 +93,4 @@ public class FriendService {
             throw new CustomException(ErrorCode.ALREADY_REQUEST);
         }
     }
-
-
-
 }

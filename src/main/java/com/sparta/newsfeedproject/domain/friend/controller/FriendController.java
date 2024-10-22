@@ -1,6 +1,7 @@
 package com.sparta.newsfeedproject.domain.friend.controller;
 
 import com.sparta.newsfeedproject.domain.friend.dto.FriendResponseDto;
+import com.sparta.newsfeedproject.domain.friend.entity.FriendRequest;
 import com.sparta.newsfeedproject.domain.friend.service.FriendService;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
@@ -37,7 +38,6 @@ public class FriendController {
         List<FriendResponseDto> friendList = friendService.getFriendList(member);
         return ResponseEntity.ok(friendList);
     }
-
 
     //친구 삭제 API
 
