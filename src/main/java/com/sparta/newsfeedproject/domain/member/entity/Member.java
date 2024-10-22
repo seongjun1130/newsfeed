@@ -33,4 +33,9 @@ public class Member extends Auditable {
     public boolean isValidPassword(String password, PasswordEncoder pwEncoder) {
         return pwEncoder.matches(password, this.password);
     }
+
+    public void update(String nickname, String country) {
+        this.nickName = nickname;
+        this.country = country;
+    }
 }
