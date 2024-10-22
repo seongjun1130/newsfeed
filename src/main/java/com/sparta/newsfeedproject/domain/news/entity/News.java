@@ -16,12 +16,12 @@ public class News extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name ="title", nullable = false,length = 50)
+    @Column(name = "title", nullable = false, length = 50)
     private String title;
-    @Column(name ="content", nullable = false,length = 500)
+    @Column(name = "content", nullable = false, length = 500)
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name="member_id")
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "member_id")
     private Member member;
 }

@@ -4,6 +4,7 @@ import com.sparta.newsfeedproject.domain.config.security.PasswordEncoder;
 import com.sparta.newsfeedproject.domain.exception.CustomException;
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.command.MemberSignUpCommand;
+import com.sparta.newsfeedproject.domain.member.dto.MemberDeleteRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.MemberLoginResponseDto;
 import com.sparta.newsfeedproject.domain.member.dto.MemberProfileResponseDto;
 import com.sparta.newsfeedproject.domain.member.dto.MemberSignUpResponseDto;
@@ -33,7 +34,6 @@ public class MemberService {
                 .email(command.getEmail())
                 .nickName(command.getNickName())
                 .password(password)
-                .phoneNumber(command.getPhoneNumber())
                 .country(command.getCountry())
                 .status(MembershipStatus.ACTIVE)
                 .build();
@@ -58,13 +58,30 @@ public class MemberService {
     }
 
     //본인 프로필 조회
-    public MemberProfileResponseDto getMyProfile (Member member) {
+    public MemberProfileResponseDto getMyProfile(Member member) {
+        if (member.isInactive()) {
+            throw new CustomException(ALREADY_EMAIL);
+        }
         return new MemberProfileResponseDto(member);
     }
 
+    @Transactional
+    public void deleteMember(Long id, MemberDeleteRequestDto req) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        if (member.isInactive()) {
+            throw new CustomException(INACTIVE_MEMBER);
+        }
+        if (!member.isValidPassword(req.getPassword(), passwordEncoder)) {
+            throw new CustomException(LOGIN_FAILED);
+        }
+        member.anonymizeMember();
+        // 친구관계, 게시글, 좋아요 삭제 예정.
+        memberRepository.save(member);
+    }
+
     private void isDuplicateMember(MemberSignUpCommand command) {
-        Optional<Member> foundMember = memberRepository.findByEmailOrNickNameOrPhoneNumber(
-                command.getEmail(), command.getNickName(), command.getPhoneNumber()
+        Optional<Member> foundMember = memberRepository.findByEmailOrNickName(
+                command.getEmail(), command.getNickName()
         );
         if (foundMember.isPresent()) {
             Member existingMember = foundMember.get();
@@ -75,10 +92,7 @@ public class MemberService {
             if (existingMember.getNickName().equals(command.getNickName())) {
                 throw new CustomException(ALREADY_NICKNAME);
             }
-
-            if (existingMember.getPhoneNumber().equals(command.getPhoneNumber())) {
-                throw new CustomException(ALREADY_PHONE_NUMBER);
-            }
         }
     }
+
 }

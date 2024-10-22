@@ -38,17 +38,20 @@ public class MemberController {
                 .status(HttpStatus.OK)
                 .body(response);
     }
-    @GetMapping("/index")
-    public void test(@LoginUser Member member){
-        System.out.println(member.getNickName());
+
+    @DeleteMapping("/profil")
+    public ResponseEntity<Void> deleteMember(@LoginUser Member member,@Valid @RequestBody MemberDeleteRequestDto req) {
+        memberService.deleteMember(member.getId(),req);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     //본인 프로필 조회
     @GetMapping("/profil")
     //현재 인증된 회원의 정보를 조회
-    public ResponseEntity<Object> getMyProfile (@LoginUser Member member) {
+    public ResponseEntity<MemberProfileResponseDto> getMyProfile(@LoginUser Member member) {
         MemberProfileResponseDto profile = memberService.getMyProfile(member);
         return ResponseEntity.ok(profile);
     }
-
 }
