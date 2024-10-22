@@ -30,7 +30,7 @@ public class NewsService {
     @Transactional
     public NewsCreateResponseDTO createNews(Member author, NewsCreateRequestDTO newsDTO) {
         News news = News.builder()
-                .author(author)
+                .member(author)
                 .title(newsDTO.getTitle())
                 .content(newsDTO.getContent())
                 .build();
@@ -58,7 +58,7 @@ public class NewsService {
                 .id(news.getId())
                 .title(news.getTitle())
                 .content(news.getContent())
-                .authorNickname(news.getAuthor().getNickName())
+                .authorNickname(news.getMember().getNickName())
                 .modifyAt(news.getModifiedAt())
                 .commentList(commentList)  // 코멘트 리스트 추가
                 .build();
@@ -77,7 +77,7 @@ public class NewsService {
                 .id(news.getId())
                 .title(news.getTitle())
                 .content(news.getContent())
-                .authorNickname(news.getAuthor().getNickName())
+                .authorNickname(news.getMember().getNickName())
                 .modifyAt(news.getModifiedAt())
                 .commentCount(news.getComments().size())
                 .build();
