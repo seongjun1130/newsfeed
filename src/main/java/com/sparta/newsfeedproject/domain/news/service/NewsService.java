@@ -1,12 +1,14 @@
 package com.sparta.newsfeedproject.domain.news.service;
 
-import com.sparta.newsfeedproject.domain.news.dto.NewsDTO;
+import com.sparta.newsfeedproject.domain.news.dto.NewsRequestDTO;
+import com.sparta.newsfeedproject.domain.news.dto.NewsResponseDTO;
 import com.sparta.newsfeedproject.domain.news.entity.News;
 import com.sparta.newsfeedproject.domain.news.repository.NewsRepository;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,35 +19,57 @@ public class NewsService {
     private final NewsRepository newsRepository;
 
     @Transactional
-    public NewsDTO createNews(Member author, NewsDTO newsDTO) {
+    public NewsResponseDTO createNews(Member author, NewsRequestDTO newsDTO) {
         News news = News.builder()
                 .author(author)
                 .title(newsDTO.getTitle())
                 .content(newsDTO.getContent())
                 .build();
         newsRepository.save(news);
-
-        return mapToDTO(news);
-    }
-
-
-
-    @Transactional(readOnly = true)
-    public Page<NewsDTO> getAllNews(int pageNo, int pageSize) {
-        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize);
-        return newsRepository.findAll(pageable).map(this::mapToDTO);
+        return mapToResponseDTO(news);
     }
 
     @Transactional(readOnly = true)
-    public NewsDTO getNews(Long id) {
+    public Page<NewsResponseDTO> getAllNews(int pageNo, int pageSize) {
+        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return newsRepository.findAll(pageable).map(this::mapToResponseDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public NewsResponseDTO getNews(Long id) {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("News not found"));
-        return mapToDTO(news);
+        return mapToResponseDTO(news);
     }
 
+    @Transactional
+    public NewsResponseDTO updateNews(Long id, Member author, NewsRequestDTO newsDTO) {
+        News news = newsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("News not found"));
 
-    private NewsDTO mapToDTO(News news) {
-        return NewsDTO.builder()
+        if (!news.getAuthor().equals(author)) {
+            throw new IllegalStateException("Only the author can update this news.");
+        }
+
+        news.updateNews(newsDTO.getTitle(), newsDTO.getContent());
+        newsRepository.save(news);
+        return mapToResponseDTO(news);
+    }
+
+    @Transactional
+    public void deleteNews(Long id, Member author) {
+        News news = newsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("News not found"));
+
+        if (!news.getAuthor().equals(author)) {
+            throw new IllegalStateException("Only the author can delete this news.");
+        }
+
+        newsRepository.delete(news);
+    }
+
+    private NewsResponseDTO mapToResponseDTO(News news) {
+        return NewsResponseDTO.builder()
                 .id(news.getId())
                 .title(news.getTitle())
                 .content(news.getContent())
