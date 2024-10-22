@@ -1,11 +1,15 @@
 package com.sparta.newsfeedproject.domain.news.entity;
 
 import com.sparta.newsfeedproject.domain.audit.Auditable;
+import com.sparta.newsfeedproject.domain.comment.entity.Comment;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
+@Setter
 @Builder
 @Entity
 @Table(name = "news")
@@ -27,8 +31,6 @@ public class News extends Auditable {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    public void updateNews(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
+    @OneToMany(mappedBy = "news", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Comment> comments;
 }
