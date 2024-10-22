@@ -18,8 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,8 +38,8 @@ public class NewsService {
     }
 
     @Transactional(readOnly = true)
-    public Page<NewsPageReadResponseDto> getAllNews(int pageNo, int pageSize) {
-        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
+    public Page<NewsPageReadResponseDto> getAllNews(int pageNo, int pageSize, Sort.Direction direction) {
+        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(direction, "createdAt"));
         return newsRepository.findAll(pageable).map(this::mapToReadPageResponseDTO);
     }
 
@@ -49,7 +48,6 @@ public class NewsService {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));  // CustomException 사용
 
-        // Comment 리스트를 DTO로 변환
         List<CommentDTO> commentList = news.getComments().stream()
                 .map(this::mapToCommentDTO)
                 .toList();
@@ -62,6 +60,34 @@ public class NewsService {
                 .modifyAt(news.getModifiedAt())
                 .commentList(commentList)  // 코멘트 리스트 추가
                 .build();
+    }
+
+    @Transactional
+    public NewsReadResponseDTO updateNews(Long id, Member author, NewsCreateRequestDTO newsDTO) {
+        News news = newsRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
+
+        if (!news.getAuthor().equals(author)) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+
+        news.setTitle(newsDTO.getTitle());
+        news.setContent(newsDTO.getContent());
+        newsRepository.save(news);
+
+        return mapToReadResponseDTO(news);
+    }
+
+    @Transactional
+    public void deleteNews(Long id, Member author) {
+        News news = newsRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
+
+        if (!news.getAuthor().equals(author)) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+
+        newsRepository.delete(news);
     }
 
     private NewsCreateResponseDTO mapToCrateResponseDTO(News news) {
@@ -80,6 +106,21 @@ public class NewsService {
                 .authorNickname(news.getAuthor().getNickName())
                 .modifyAt(news.getModifiedAt())
                 .commentCount(news.getComments().size())
+                .build();
+    }
+
+    private NewsReadResponseDTO mapToReadResponseDTO(News news) {
+        List<CommentDTO> commentList = news.getComments().stream()
+                .map(this::mapToCommentDTO)
+                .toList();
+
+        return NewsReadResponseDTO.builder()
+                .id(news.getId())
+                .title(news.getTitle())
+                .content(news.getContent())
+                .authorNickname(news.getAuthor().getNickName())
+                .modifyAt(news.getModifiedAt())
+                .commentList(commentList)
                 .build();
     }
 
