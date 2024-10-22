@@ -22,4 +22,10 @@ public class Friend {
     @ManyToOne
     @JoinColumn(name = "friend_id")
     private Member friend; //로그인 한 유저의 친구
+
+    public Friend(Member member, Member friend) {
+        this.member = member;
+        this.friend = friend;
+    }
+
 }
