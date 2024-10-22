@@ -3,7 +3,8 @@ package com.sparta.newsfeedproject.domain.news.controller;
 import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
 import com.sparta.newsfeedproject.domain.news.dto.NewsCreateRequestDTO;
 import com.sparta.newsfeedproject.domain.news.dto.NewsCreateResponseDTO;
-import com.sparta.newsfeedproject.domain.news.dto.NewsResponseDTO;
+import com.sparta.newsfeedproject.domain.news.dto.NewsPageReadResponseDto;
+import com.sparta.newsfeedproject.domain.news.dto.NewsReadResponseDTO;
 import com.sparta.newsfeedproject.domain.news.service.NewsService;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import jakarta.validation.Valid;
@@ -21,10 +22,10 @@ public class NewsController {
 
     // 뉴스 전체 조회 (페이지네이션 + 정렬)
     @GetMapping
-    public ResponseEntity<Page<NewsResponseDTO>> getAllNews(
+    public ResponseEntity<Page<NewsPageReadResponseDto>> getAllNews(
             @RequestParam(defaultValue = "1") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
-        Page<NewsResponseDTO> newsPage = newsService.getAllNews(pageNo, pageSize);
+        Page<NewsPageReadResponseDto> newsPage = newsService.getAllNews(pageNo, pageSize);
         return ResponseEntity.ok(newsPage);
     }
 
@@ -39,8 +40,8 @@ public class NewsController {
 
     // 뉴스 단건 조회 (코멘트 포함)
     @GetMapping("/{id}")
-    public ResponseEntity<NewsResponseDTO> getNews(@PathVariable Long id) {
-        NewsResponseDTO newsDTO = newsService.getNews(id);
+    public ResponseEntity<NewsReadResponseDTO> getNews(@PathVariable Long id) {
+        NewsReadResponseDTO newsDTO = newsService.getNews(id);
         return ResponseEntity.ok(newsDTO);
     }
 }
