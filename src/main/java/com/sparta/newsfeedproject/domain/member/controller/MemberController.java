@@ -2,10 +2,7 @@ package com.sparta.newsfeedproject.domain.member.controller;
 
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.command.MemberSignUpCommand;
-import com.sparta.newsfeedproject.domain.member.dto.MemberLoginRequestDto;
-import com.sparta.newsfeedproject.domain.member.dto.MemberLoginResponseDto;
-import com.sparta.newsfeedproject.domain.member.dto.MemberSignUpRequestDto;
-import com.sparta.newsfeedproject.domain.member.dto.MemberSignUpResponseDto;
+import com.sparta.newsfeedproject.domain.member.dto.*;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;
@@ -44,5 +41,20 @@ public class MemberController {
     @GetMapping("/index")
     public void test(@LoginUser Member member){
         System.out.println(member.getNickName());
+    }
+
+    //본인 프로필 조회
+    @GetMapping("/profil")
+    //현재 인증된 회원의 정보를 조회
+    public ResponseEntity<MemberProfileResponseDto> getMyProfile (@LoginUser Member member) {
+        MemberProfileResponseDto profile = memberService.getMyProfile(member);
+        return ResponseEntity.ok(profile);
+    }
+
+    //타인 프로필 조회
+    @GetMapping("/profil/{targetId}")
+    public ResponseEntity<MemberProfileResponseDto> getOtherProfile (@PathVariable("targetId") Long targetId) {
+        MemberProfileResponseDto profile = memberService.getOtherProfile(targetId);
+        return ResponseEntity.ok(profile);
     }
 }

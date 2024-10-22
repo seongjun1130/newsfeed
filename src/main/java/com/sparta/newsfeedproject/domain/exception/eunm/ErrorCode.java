@@ -17,10 +17,10 @@ public enum ErrorCode {
 
     // 404 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저", 404),
+    INACTIVE_MEMBER(HttpStatus.NOT_FOUND, "탈퇴한 회원입니다.", 404),
 
     // 409
     ALREADY_EMAIL(HttpStatus.CONFLICT, "이미 사용되는 이메일", 409),
-    ALREADY_PHONE_NUMBER(HttpStatus.CONFLICT, "이미 사용되는 전화번호", 409),
     ALREADY_FRIEND(HttpStatus.CONFLICT, "이미 친구 상태", 409),
     ALREADY_REQUEST(HttpStatus.CONFLICT, "이미 요청 상태", 409),
     ALREADY_NICKNAME(HttpStatus.CONFLICT, "이미 사용되는 닉네임", 409);
