@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class FriendRequestDto {
-    private Long requesterId;
     private Long receiverId;
 }
