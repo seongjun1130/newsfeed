@@ -41,21 +41,4 @@ public class NewsController {
         NewsResponseDTO newsDTO = newsService.getNews(id);
         return ResponseEntity.ok(newsDTO);
     }
-
-    // 뉴스 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<NewsResponseDTO> updateNews(
-            @PathVariable Long id,
-            @Valid @RequestBody NewsRequestDTO newsDTO,
-            @RequestAttribute Member member) {
-        NewsResponseDTO updatedNews = newsService.updateNews(id, member, newsDTO);
-        return ResponseEntity.ok(updatedNews);
-    }
-
-    // 뉴스 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNews(@PathVariable Long id, @RequestAttribute Member member) {
-        newsService.deleteNews(id, member);
-        return ResponseEntity.noContent().build();
-    }
 }

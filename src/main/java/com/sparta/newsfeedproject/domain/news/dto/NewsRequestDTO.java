@@ -10,9 +10,9 @@ import lombok.*;
 @AllArgsConstructor
 public class NewsRequestDTO {
 
-    @NotBlank(message = "Title is mandatory")
+    @NotBlank(message = "타이틀을 채워야합니다.")
     private String title;
 
-    @NotBlank(message = "Content is mandatory")
+    @NotBlank(message = "content가 채워야합니다.")
     private String content;
 }

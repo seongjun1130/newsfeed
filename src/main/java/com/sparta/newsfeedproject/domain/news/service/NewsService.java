@@ -42,32 +42,6 @@ public class NewsService {
         return mapToResponseDTO(news);
     }
 
-    @Transactional
-    public NewsResponseDTO updateNews(Long id, Member author, NewsRequestDTO newsDTO) {
-        News news = newsRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("News not found"));
-
-        if (!news.getAuthor().equals(author)) {
-            throw new IllegalStateException("Only the author can update this news.");
-        }
-
-        news.updateNews(newsDTO.getTitle(), newsDTO.getContent());
-        newsRepository.save(news);
-        return mapToResponseDTO(news);
-    }
-
-    @Transactional
-    public void deleteNews(Long id, Member author) {
-        News news = newsRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("News not found"));
-
-        if (!news.getAuthor().equals(author)) {
-            throw new IllegalStateException("Only the author can delete this news.");
-        }
-
-        newsRepository.delete(news);
-    }
-
     private NewsResponseDTO mapToResponseDTO(News news) {
         return NewsResponseDTO.builder()
                 .id(news.getId())
