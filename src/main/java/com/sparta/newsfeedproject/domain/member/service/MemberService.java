@@ -84,12 +84,13 @@ public class MemberService {
             throw new CustomException(INVALID_PASSWORD);
         }
 
-        Optional<Member> existingMember = memberRepository.findByNickName(requestDto.getNickname());
-        if (existingMember.isPresent() && existingMember.get().getId().equals(member.getId())) {
+        if (!member.getNickName().equals(requestDto.getNickname()) &&
+                memberRepository.existsByNickName(requestDto.getNickname())) {
             throw new CustomException(ALREADY_NICKNAME);
         }
-//        member.setNickName(requestDto.getNickname());
-//        member.setCountry(requestDto.getCountry());
+
+        member.setNickName(requestDto.getNickname());
+        member.setCountry(requestDto.getCountry());
 
         member.update(requestDto.getNickname(), requestDto.getCountry());
 
