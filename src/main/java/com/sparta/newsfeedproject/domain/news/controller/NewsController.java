@@ -64,6 +64,6 @@ public class NewsController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNews(@PathVariable Long id, @LoginUser Member member) {
         newsService.deleteNews(id, member);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build(); // 204 No Content 응답
     }
 }

@@ -67,7 +67,7 @@ public class NewsService {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
 
-        if (!news.getMember().equals(member)) {
+        if (!news.getMember().getId().equals(member.getId())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
 
@@ -83,10 +83,9 @@ public class NewsService {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
 
-        if (!news.getMember().equals(member)) {
+        if (!news.getMember().getId().equals(member.getId())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
-
         newsRepository.delete(news);
     }
 
