@@ -7,6 +7,7 @@ import com.sparta.newsfeedproject.domain.friend.repository.FriendRepository;
 import com.sparta.newsfeedproject.domain.friend.repository.FriendRequestRepository;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
+import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +22,9 @@ public class FriendService {
     public void sendFriendRequest(Long requesterId, Long receiverId) {
         // 가입한 회원인지 확인
         Member requester = memberRepository.findById(requesterId)
-                .orElseThrow(() -> new CustomException(ErrorCode.REQUEST_USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND);
         Member receiver = memberRepository.findById(receiverId)
-                .orElseThrow(() -> new CustomException(ErrorCode.RECEIVER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         validateFriendRequest(requesterId, receiverId, requester, receiver);
 

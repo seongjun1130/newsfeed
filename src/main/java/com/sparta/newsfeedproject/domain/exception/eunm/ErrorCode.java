@@ -17,8 +17,6 @@ public enum ErrorCode {
 
     // 404 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저", 404),
-    REQUEST_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 요청 유저", 404),
-    RECEIVER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 수신 유저", 404),
 
     // 409
     ALREADY_EMAIL(HttpStatus.CONFLICT, "이미 사용되는 이메일", 409),
