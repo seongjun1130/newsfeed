@@ -8,7 +8,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CommentResponseDto {
-    private String comment;
-    private Member member;
-    private News news;
+    private Long id;
 }
