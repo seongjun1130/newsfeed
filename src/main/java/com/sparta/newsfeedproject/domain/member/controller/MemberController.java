@@ -41,8 +41,4 @@ public class MemberController {
                 .status(HttpStatus.OK)
                 .body(response);
     }
-    @GetMapping("/index")
-    public void test(@LoginUser Member member){
-        System.out.println(member.getNickName());
-    }
 }

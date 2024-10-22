@@ -1,6 +1,8 @@
 package com.sparta.newsfeedproject.domain.news.controller;
 
-import com.sparta.newsfeedproject.domain.news.dto.NewsRequestDTO;
+import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
+import com.sparta.newsfeedproject.domain.news.dto.NewsCreateRequestDTO;
+import com.sparta.newsfeedproject.domain.news.dto.NewsCreateResponseDTO;
 import com.sparta.newsfeedproject.domain.news.dto.NewsResponseDTO;
 import com.sparta.newsfeedproject.domain.news.service.NewsService;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
@@ -28,10 +30,10 @@ public class NewsController {
 
     // 뉴스 생성
     @PostMapping
-    public ResponseEntity<NewsResponseDTO> createNews(
-            @Valid @RequestBody NewsRequestDTO newsDTO,
-            @RequestAttribute Member member) {
-        NewsResponseDTO createdNews = newsService.createNews(member, newsDTO);
+    public ResponseEntity<NewsCreateResponseDTO> createNews(
+            @Valid @RequestBody NewsCreateRequestDTO newsDTO,
+            @LoginUser Member member) {
+        NewsCreateResponseDTO createdNews = newsService.createNews(member, newsDTO);
         return ResponseEntity.ok(createdNews);
     }
 

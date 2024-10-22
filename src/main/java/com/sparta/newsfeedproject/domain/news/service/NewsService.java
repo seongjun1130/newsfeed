@@ -4,7 +4,8 @@ import com.sparta.newsfeedproject.domain.comment.dto.CommentDTO;
 import com.sparta.newsfeedproject.domain.comment.entity.Comment;
 import com.sparta.newsfeedproject.domain.exception.CustomException;
 import com.sparta.newsfeedproject.domain.exception.eunm.ErrorCode;
-import com.sparta.newsfeedproject.domain.news.dto.NewsRequestDTO;
+import com.sparta.newsfeedproject.domain.news.dto.NewsCreateRequestDTO;
+import com.sparta.newsfeedproject.domain.news.dto.NewsCreateResponseDTO;
 import com.sparta.newsfeedproject.domain.news.dto.NewsResponseDTO;
 import com.sparta.newsfeedproject.domain.news.entity.News;
 import com.sparta.newsfeedproject.domain.news.repository.NewsRepository;
@@ -26,14 +27,14 @@ public class NewsService {
     private final NewsRepository newsRepository;
 
     @Transactional
-    public NewsResponseDTO createNews(Member author, NewsRequestDTO newsDTO) {
+    public NewsCreateResponseDTO createNews(Member author, NewsCreateRequestDTO newsDTO) {
         News news = News.builder()
                 .author(author)
                 .title(newsDTO.getTitle())
                 .content(newsDTO.getContent())
                 .build();
         newsRepository.save(news);
-        return mapToResponseDTO(news);
+        return mapToCrateResponseDTO(news);
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +60,14 @@ public class NewsService {
                 .authorNickname(news.getAuthor().getNickName())
                 .modifyAt(news.getModifiedAt().toString())
                 .commentList(commentList)  // 코멘트 리스트 추가
+                .build();
+    }
+
+    private NewsCreateResponseDTO mapToCrateResponseDTO(News news) {
+        return NewsCreateResponseDTO.builder()
+                .id(news.getId())
+                .title(news.getTitle())
+                .content(news.getContent())
                 .build();
     }
 
