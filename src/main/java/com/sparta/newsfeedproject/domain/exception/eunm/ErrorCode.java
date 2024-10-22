@@ -19,6 +19,7 @@ public enum ErrorCode {
 
     // 404 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저", 404),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 댓글", 404),
     INACTIVE_MEMBER(HttpStatus.NOT_FOUND, "탈퇴한 회원입니다.", 404),
     NEWS_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 뉴스", 404),  // 뉴스가 존재하지 않을 때
 
