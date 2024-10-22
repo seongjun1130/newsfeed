@@ -35,7 +35,7 @@ public class NewsController {
         return ResponseEntity.ok(createdNews);
     }
 
-    // 뉴스 단건 조회
+    // 뉴스 단건 조회 (코멘트 포함)
     @GetMapping("/{id}")
     public ResponseEntity<NewsResponseDTO> getNews(@PathVariable Long id) {
         NewsResponseDTO newsDTO = newsService.getNews(id);

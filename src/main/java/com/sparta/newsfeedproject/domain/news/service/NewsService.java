@@ -1,5 +1,7 @@
 package com.sparta.newsfeedproject.domain.news.service;
 
+import com.sparta.newsfeedproject.domain.comment.dto.CommentDTO;
+import com.sparta.newsfeedproject.domain.comment.entity.Comment;
 import com.sparta.newsfeedproject.domain.news.dto.NewsRequestDTO;
 import com.sparta.newsfeedproject.domain.news.dto.NewsResponseDTO;
 import com.sparta.newsfeedproject.domain.news.entity.News;
@@ -11,6 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +44,19 @@ public class NewsService {
     public NewsResponseDTO getNews(Long id) {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("News not found"));
-        return mapToResponseDTO(news);
+
+        List<CommentDTO> commentList = news.getComments().stream()
+                .map(this::mapToCommentDTO)
+                .collect(Collectors.toList());
+
+        return NewsResponseDTO.builder()
+                .id(news.getId())
+                .title(news.getTitle())
+                .content(news.getContent())
+                .authorNickname(news.getAuthor().getNickName())
+                .modifyAt(news.getModifiedAt().toString())
+                .commentList(commentList)  // 코멘트 리스트 추가
+                .build();
     }
 
     private NewsResponseDTO mapToResponseDTO(News news) {
@@ -49,6 +66,16 @@ public class NewsService {
                 .content(news.getContent())
                 .authorNickname(news.getAuthor().getNickName())
                 .modifyAt(news.getModifiedAt().toString())
+                .build();
+    }
+
+    // Comment 엔티티를 CommentDTO로 변환하는 메서드 추가
+    private CommentDTO mapToCommentDTO(Comment comment) {
+        return CommentDTO.builder()
+                .id(comment.getId())
+                .comment(comment.getComment())
+                .authorNickname(comment.getMember().getNickName())
+                .createdAt(comment.getCreatedAt().toString())
                 .build();
     }
 }
