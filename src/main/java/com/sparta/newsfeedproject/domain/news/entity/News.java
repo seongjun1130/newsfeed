@@ -28,7 +28,7 @@ public class News extends Auditable {
     private String content;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name="member_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToMany(mappedBy = "news", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
