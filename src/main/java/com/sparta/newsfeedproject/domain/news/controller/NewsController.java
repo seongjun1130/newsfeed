@@ -1,17 +1,17 @@
 package com.sparta.newsfeedproject.domain.news.controller;
 
 import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
-import com.sparta.newsfeedproject.domain.news.dto.NewsCreateRequestDTO;
-import com.sparta.newsfeedproject.domain.news.dto.NewsCreateResponseDTO;
-import com.sparta.newsfeedproject.domain.news.dto.NewsPageReadResponseDto;
-import com.sparta.newsfeedproject.domain.news.dto.NewsReadResponseDTO;
+import com.sparta.newsfeedproject.domain.news.dto.*;
 import com.sparta.newsfeedproject.domain.news.service.NewsService;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/news")
@@ -19,15 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class NewsController {
 
     private final NewsService newsService;
-
-    // 뉴스 전체 조회 (페이지네이션 + 정렬)
-    @GetMapping
-    public ResponseEntity<Page<NewsPageReadResponseDto>> getAllNews(
-            @RequestParam(defaultValue = "1") int pageNo,
-            @RequestParam(defaultValue = "10") int pageSize) {
-        Page<NewsPageReadResponseDto> newsPage = newsService.getAllNews(pageNo, pageSize);
-        return ResponseEntity.ok(newsPage);
-    }
 
     // 뉴스 생성
     @PostMapping
@@ -43,5 +34,33 @@ public class NewsController {
     public ResponseEntity<NewsReadResponseDTO> getNews(@PathVariable Long id) {
         NewsReadResponseDTO newsDTO = newsService.getNews(id);
         return ResponseEntity.ok(newsDTO);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<NewsPageReadResponseDto>> getAllNews(
+            @RequestParam(defaultValue = "1") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
+        Page<NewsPageReadResponseDto> newsPage = newsService.getAllNews(pageNo, pageSize, startDate, endDate);
+        return ResponseEntity.ok(newsPage);
+    }
+
+    // 뉴스 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<NewsUpdateResponseDTO> updateNews(
+            @PathVariable Long id,
+            @LoginUser Member member,
+            @RequestBody NewsUpdateRequestDTO newsDTO) {
+        NewsUpdateResponseDTO response = newsService.updateNews(id, member, newsDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    // 뉴스 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<NewsDeleteResponseDTO> deleteNews(@PathVariable Long id, @LoginUser Member member) {
+        NewsDeleteResponseDTO response = newsService.deleteNews(id, member);
+        return ResponseEntity.ok(response);
     }
 }
