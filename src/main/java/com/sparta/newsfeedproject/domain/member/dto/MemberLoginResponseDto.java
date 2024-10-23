@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class MemberLoginResponseDto {
-    private String token;
-    private String nickName;
     private Long id;
+    private String message;
+    private String token;
 }

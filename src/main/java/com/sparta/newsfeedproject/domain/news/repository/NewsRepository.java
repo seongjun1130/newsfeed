@@ -10,5 +10,9 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface NewsRepository extends JpaRepository<News, Long> {
+
+    void deleteByMemberId(Long id);
+
     Page<News> findAllByModifiedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable);
+
 }

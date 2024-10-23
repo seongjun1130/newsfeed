@@ -2,6 +2,7 @@ package com.sparta.newsfeedproject.domain.news.entity;
 
 import com.sparta.newsfeedproject.domain.audit.Auditable;
 import com.sparta.newsfeedproject.domain.comment.entity.Comment;
+import com.sparta.newsfeedproject.domain.like.entity.Like;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,4 +37,15 @@ public class News extends Auditable {
     // 게시물과 연결된 댓글 목록을 저장 (게시물 삭제 시 댓글도 함께 삭제)
     @OneToMany(mappedBy = "news", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "news", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Like> likes;
+
+    public boolean isValidateCreator(Long memberId) {
+        if (this.getMember().getId().equals(memberId)) {
+            return true;
+        }
+        return false;
+    }
+
 }
