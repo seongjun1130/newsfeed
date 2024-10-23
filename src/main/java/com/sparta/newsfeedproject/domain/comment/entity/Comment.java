@@ -22,11 +22,11 @@ public class Comment extends Auditable {
     @Column(name = "comment", nullable = false, length = 100)
     private String comment;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "news_id")
     private News news;
 
@@ -36,6 +36,7 @@ public class Comment extends Auditable {
         comment.initData(commentRequestDto, member, news);
         return comment;
     }
+
     // 초기화 메서드
     private void initData(CommentRequestDto commentRequestDto, Member member, News news) {
         this.comment = commentRequestDto.getComment();
@@ -49,11 +50,18 @@ public class Comment extends Auditable {
                 this.id
         );
     }
+
     // 댓글 내용 수정
-    public void updatedata(CommentRequestDto commentRequestDto){
-            this.comment = commentRequestDto.getComment();
+    public void updatedata(CommentRequestDto commentRequestDto) {
+        this.comment = commentRequestDto.getComment();
 
+    }
+        
+    public boolean isValidateCreator(Long memberId) {
+        if (this.getMember().getId().equals(memberId)) {
+            return true;
         }
-
+        return false;
+    }
 
 }

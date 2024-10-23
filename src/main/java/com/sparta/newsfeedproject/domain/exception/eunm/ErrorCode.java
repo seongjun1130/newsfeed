@@ -16,6 +16,7 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰", 401),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호입니다.", 401),
     CANNOT_FRIEND_YOURSELF(HttpStatus.UNAUTHORIZED, "본인에게 친구 요청", 401),
+    CANNOT_LIKE_YOURSELF(HttpStatus.UNAUTHORIZED, "본인게시물 혹은 댓글 좋아요", 401),
 
     // 404 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저", 404),
@@ -29,7 +30,8 @@ public enum ErrorCode {
     ALREADY_EMAIL(HttpStatus.CONFLICT, "이미 사용되는 이메일", 409),
     ALREADY_FRIEND(HttpStatus.CONFLICT, "이미 친구 상태", 409),
     ALREADY_REQUEST(HttpStatus.CONFLICT, "이미 요청 상태", 409),
-    ALREADY_NICKNAME(HttpStatus.CONFLICT, "이미 사용되는 닉네임", 409);
+    ALREADY_NICKNAME(HttpStatus.CONFLICT, "이미 사용되는 닉네임", 409),
+    ALREADY_LIKE(HttpStatus.CONFLICT, "이미 좋아요 상태", 409);
 
     private final HttpStatus code;
     private final String message;
