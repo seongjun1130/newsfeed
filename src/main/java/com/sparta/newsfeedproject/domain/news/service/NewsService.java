@@ -4,10 +4,7 @@ import com.sparta.newsfeedproject.domain.comment.dto.CommentDTO;
 import com.sparta.newsfeedproject.domain.comment.entity.Comment;
 import com.sparta.newsfeedproject.domain.exception.CustomException;
 import com.sparta.newsfeedproject.domain.exception.eunm.ErrorCode;
-import com.sparta.newsfeedproject.domain.news.dto.NewsCreateRequestDTO;
-import com.sparta.newsfeedproject.domain.news.dto.NewsCreateResponseDTO;
-import com.sparta.newsfeedproject.domain.news.dto.NewsPageReadResponseDto;
-import com.sparta.newsfeedproject.domain.news.dto.NewsReadResponseDTO;
+import com.sparta.newsfeedproject.domain.news.dto.*;
 import com.sparta.newsfeedproject.domain.news.entity.News;
 import com.sparta.newsfeedproject.domain.news.repository.NewsRepository;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -41,15 +37,19 @@ public class NewsService {
 
 
     @Transactional(readOnly = true)
-    public Page<NewsPageReadResponseDto> getAllNews(int pageNo, int pageSize, Sort.Direction direction, LocalDate startDate, LocalDate endDate) {
-        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(direction, "createdAt"));
+    public Page<NewsPageReadResponseDto> getAllNews(int pageNo, int pageSize, LocalDate startDate, LocalDate endDate) {
+        PageRequest pageable;
 
-        // startDate와 endDate가 모두 제공된 경우 날짜 필터링 적용
         if (startDate != null && endDate != null) {
-            return newsRepository.findAllByCreatedAtBetween(startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX), pageable)
-                    .map(this::mapToReadPageResponseDTO);
+            // 날짜가 주어졌을 때 modifiedAt 기준으로 정렬
+            pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.DESC, "modifiedAt"));
+            return newsRepository.findAllByModifiedAtBetween(
+                    startDate.atStartOfDay(),
+                    endDate.atTime(23, 59, 59),
+                    pageable).map(this::mapToReadPageResponseDTO);
         } else {
-            // 날짜 필터링 없이 전체 조회
+            // 날짜가 없을 경우 id 기준으로 내림차순 정렬
+            pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"));
             return newsRepository.findAll(pageable).map(this::mapToReadPageResponseDTO);
         }
     }
@@ -75,7 +75,7 @@ public class NewsService {
     }
 
     @Transactional
-    public NewsReadResponseDTO updateNews(Long id, Member member, NewsCreateRequestDTO newsDTO) {
+    public NewsUpdateResponseDTO updateNews(Long id, Member member, NewsUpdateRequestDTO newsDTO) {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
 
@@ -87,7 +87,13 @@ public class NewsService {
         news.setContent(newsDTO.getContent());
         newsRepository.save(news);
 
-        return mapToReadResponseDTO(news);
+        return NewsUpdateResponseDTO.builder()
+                .id(news.getId())
+                .title(news.getTitle())
+                .content(news.getContent())
+                .authorNickname(news.getMember().getNickName())
+                .modifyAt(news.getModifiedAt())
+                .build();
     }
 
     @Transactional
@@ -120,21 +126,6 @@ public class NewsService {
                 .authorNickname(news.getMember().getNickName())
                 .modifyAt(news.getModifiedAt())
                 .commentCount(news.getComments().size())
-                .build();
-    }
-
-    private NewsReadResponseDTO mapToReadResponseDTO(News news) {
-        List<CommentDTO> commentList = news.getComments().stream()
-                .map(this::mapToCommentDTO)
-                .toList();
-
-        return NewsReadResponseDTO.builder()
-                .id(news.getId())
-                .title(news.getTitle())
-                .content(news.getContent())
-                .authorNickname(news.getMember().getNickName())
-                .modifyAt(news.getModifiedAt())
-                .commentList(commentList)
                 .build();
     }
 

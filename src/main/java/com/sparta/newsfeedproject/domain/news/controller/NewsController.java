@@ -1,10 +1,7 @@
 package com.sparta.newsfeedproject.domain.news.controller;
 
 import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
-import com.sparta.newsfeedproject.domain.news.dto.NewsCreateRequestDTO;
-import com.sparta.newsfeedproject.domain.news.dto.NewsCreateResponseDTO;
-import com.sparta.newsfeedproject.domain.news.dto.NewsPageReadResponseDto;
-import com.sparta.newsfeedproject.domain.news.dto.NewsReadResponseDTO;
+import com.sparta.newsfeedproject.domain.news.dto.*;
 import com.sparta.newsfeedproject.domain.news.service.NewsService;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import jakarta.validation.Valid;
@@ -40,35 +37,26 @@ public class NewsController {
         return ResponseEntity.ok(newsDTO);
     }
 
-    // 뉴스 전체 조회 (코멘트 포함)
     @GetMapping
     public ResponseEntity<Page<NewsPageReadResponseDto>> getAllNews(
             @RequestParam(defaultValue = "1") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "DESC") String sortDir,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
-        // 정렬 방향 설정 (DESC, ASC)
-        Sort.Direction direction = Sort.Direction.fromString(sortDir);
-
-        // 뉴스 조회 서비스 호출
-        Page<NewsPageReadResponseDto> newsPage = newsService.getAllNews(pageNo, pageSize, direction, startDate, endDate);
+        Page<NewsPageReadResponseDto> newsPage = newsService.getAllNews(pageNo, pageSize, startDate, endDate);
         return ResponseEntity.ok(newsPage);
     }
 
-
-
-    // 뉴스 수정
+    // 뉴스 업데이트
     @PutMapping("/{id}")
-    public ResponseEntity<NewsReadResponseDTO> updateNews(
+    public ResponseEntity<NewsUpdateResponseDTO> updateNews(
             @PathVariable Long id,
-            @Valid @RequestBody NewsCreateRequestDTO newsDTO,
-            @LoginUser Member member) {
-        NewsReadResponseDTO updatedNews = newsService.updateNews(id, member, newsDTO);
+            @LoginUser Member member,
+            @RequestBody NewsUpdateRequestDTO newsDTO) {
+        NewsUpdateResponseDTO updatedNews = newsService.updateNews(id, member, newsDTO);
         return ResponseEntity.ok(updatedNews);
     }
-
 
     // 뉴스 삭제
     @DeleteMapping("/{id}")
