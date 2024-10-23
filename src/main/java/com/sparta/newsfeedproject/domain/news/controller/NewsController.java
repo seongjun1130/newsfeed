@@ -7,7 +7,6 @@ import com.sparta.newsfeedproject.domain.member.entity.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,20 +47,20 @@ public class NewsController {
         return ResponseEntity.ok(newsPage);
     }
 
-    // 뉴스 업데이트
+    // 뉴스 수정
     @PutMapping("/{id}")
     public ResponseEntity<NewsUpdateResponseDTO> updateNews(
             @PathVariable Long id,
             @LoginUser Member member,
             @RequestBody NewsUpdateRequestDTO newsDTO) {
-        NewsUpdateResponseDTO updatedNews = newsService.updateNews(id, member, newsDTO);
-        return ResponseEntity.ok(updatedNews);
+        NewsUpdateResponseDTO response = newsService.updateNews(id, member, newsDTO);
+        return ResponseEntity.ok(response);
     }
 
     // 뉴스 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNews(@PathVariable Long id, @LoginUser Member member) {
-        newsService.deleteNews(id, member);
-        return ResponseEntity.noContent().build(); // 204 No Content 응답
+    public ResponseEntity<NewsDeleteResponseDTO> deleteNews(@PathVariable Long id, @LoginUser Member member) {
+        NewsDeleteResponseDTO response = newsService.deleteNews(id, member);
+        return ResponseEntity.ok(response);
     }
 }

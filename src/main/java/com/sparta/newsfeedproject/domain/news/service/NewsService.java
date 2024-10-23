@@ -89,25 +89,25 @@ public class NewsService {
 
         return NewsUpdateResponseDTO.builder()
                 .id(news.getId())
-                .title(news.getTitle())
-                .content(news.getContent())
-                .authorNickname(news.getMember().getNickName())
-                .modifyAt(news.getModifiedAt())
+                .message("수정되었습니다.")
                 .build();
     }
 
     @Transactional
-    public void deleteNews(Long id, Member member) {
+    public NewsDeleteResponseDTO deleteNews(Long id, Member member) {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
 
-        // 작성자가 일치하는지 검증
-        if (!news.isAuthor(member)) {
+        if (!news.getMember().getId().equals(member.getId())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
 
-        // 작성자가 맞다면 게시물 삭제
         newsRepository.delete(news);
+
+        return NewsDeleteResponseDTO.builder()
+                .id(news.getId())
+                .message("삭제되었습니다.")
+                .build();
     }
 
     private NewsCreateResponseDTO mapToCrateResponseDTO(News news) {
