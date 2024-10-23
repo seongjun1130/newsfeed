@@ -90,6 +90,20 @@ public class FriendService {
                 .sorted(Comparator.comparing(FriendResponseDto::getNickname)) // 닉네임 기준으로 정렬
                 .collect(Collectors.toList());
     }
+    @Transactional
+    public void deleteFriend(Member member, Long friendId) {
+        //삭제할 친구 조회
+        Member friend = memberRepository.findById(friendId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 로그인한 사용자와 삭제할 친구 사이의 친구 관계를 찾음
+        Friend friendRelation = friendRepository.findByMemberAndFriend(member, friend)
+                .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_NOT_FOUND));
+
+        // 친구 관계 삭제
+        friendRepository.deleteByMemberAndFriend(member, friend);
+        friendRepository.deleteByMemberAndFriend(friend, member);
+    }
 
     @Transactional
     public void deleteFriend(Member member, Long targetId) {
@@ -152,4 +166,6 @@ public class FriendService {
             throw new CustomException(ErrorCode.ALREADY_REQUEST);
         }
     }
+
+
 }
