@@ -39,25 +39,40 @@ public class MemberController {
                 .body(response);
     }
 
+    @DeleteMapping("/profil")
+    public ResponseEntity<MemberDeleteResponseDto> deleteMember(@LoginUser Member member, @Valid @RequestBody MemberDeleteRequestDto req) {
+        memberService.deleteMember(member.getId(), req);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
     //본인 프로필 조회
     @GetMapping("/profil")
     //현재 인증된 회원의 정보를 조회
-    public ResponseEntity<MemberProfileResponseDto> getMyProfile (@LoginUser Member member) {
+    public ResponseEntity<MemberProfileResponseDto> getMyProfile(@LoginUser Member member) {
         MemberProfileResponseDto profile = memberService.getMyProfile(member);
-        return ResponseEntity.ok(profile);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(profile);
     }
 
     //타인 프로필 조회
     @GetMapping("/profil/{targetId}")
-    public ResponseEntity<MemberProfileResponseDto> getOtherProfile (@PathVariable("targetId") Long targetId) {
+    public ResponseEntity<MemberProfileResponseDto> getOtherProfile(@PathVariable("targetId") Long targetId) {
         MemberProfileResponseDto profile = memberService.getOtherProfile(targetId);
-        return ResponseEntity.ok(profile);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(profile);
     }
 
     //프로필 수정
     @PutMapping("/profil")
-    public ResponseEntity<MemberProfileResponseDto> updateProfile(@LoginUser Member member, @Valid @RequestBody ProfileUpdateRequestDto requestDto) {
-        MemberProfileResponseDto updatedProfile = memberService.updateProfile(member, requestDto);
-        return ResponseEntity.ok(new MemberProfileResponseDto(updatedProfile.getNickname()));
+    public ResponseEntity<ProfileUpdateResponseDto> updateProfile(@LoginUser Member member, @Valid @RequestBody ProfileUpdateRequestDto requestDto) {
+        String message = memberService.updateProfile(member, requestDto);
+        ProfileUpdateResponseDto responseDto = new ProfileUpdateResponseDto(member.getId(), message);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseDto);
     }
 }
