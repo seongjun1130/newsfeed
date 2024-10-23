@@ -32,9 +32,11 @@ public class NewsService {
                 .content(newsDTO.getContent())
                 .build();
         newsRepository.save(news);
-        return mapToCrateResponseDTO(news);
+        return NewsCreateResponseDTO.builder()
+                .id(news.getId())
+                .message("작성되었습니다")
+                .build();
     }
-
 
     @Transactional(readOnly = true)
     public Page<NewsPageReadResponseDto> getAllNews(int pageNo, int pageSize, LocalDate startDate, LocalDate endDate) {
@@ -107,14 +109,6 @@ public class NewsService {
         return NewsDeleteResponseDTO.builder()
                 .id(news.getId())
                 .message("삭제되었습니다.")
-                .build();
-    }
-
-    private NewsCreateResponseDTO mapToCrateResponseDTO(News news) {
-        return NewsCreateResponseDTO.builder()
-                .id(news.getId())
-                .title(news.getTitle())
-                .content(news.getContent())
                 .build();
     }
 
