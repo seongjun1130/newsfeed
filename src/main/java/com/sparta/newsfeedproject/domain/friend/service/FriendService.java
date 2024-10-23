@@ -58,8 +58,10 @@ public class FriendService {
                 .orElseThrow(() -> new CustomException(ErrorCode.REQUEST_NOT_FOUND));
 
         // 로그인한 회원의 친구목록에 추가
-        Friend friend = new Friend(member, receiver);
-        friendRepository.save(friend);
+        Friend friend1 = new Friend(member, receiver);
+        Friend friend2 = new Friend(receiver, member);
+        friendRepository.save(friend1);
+        friendRepository.save(friend2);
 
         // 친구 요청 테이블에서 데이터 삭제
         friendRequestRepository.delete(friendRequest);
@@ -70,17 +72,21 @@ public class FriendService {
         // 로그인한 사용자의 ID를 가져옵니다.
         Long memberId = member.getId();
 
-        // 회원 ID를 기반으로 친구 목록을 조회
+        // 친구 목록을 조회 (한쪽 방향으로만 조회)
         List<Friend> friends = friendRepository.findAllByMemberId(memberId);
 
         // 친구 정보를 Set을 사용하여 중복 제거
         Set<FriendResponseDto> friendResponseDtos = new HashSet<>();
 
         for (Friend friend : friends) {
-            if (friend.getMember().getId().equals(memberId)) {// member_id가 로그인한 사용자일 경우
-                friendResponseDtos.add(new FriendResponseDto(friend.getFriend().getId(),friend.getFriend().getEmail(), friend.getFriend().getNickName(), friend.getFriend().getCountry()));
-            } else { // friend_id가 로그인한 사용자일 경우
-                friendResponseDtos.add(new FriendResponseDto(friend.getMember().getId(),friend.getMember().getEmail(), friend.getMember().getNickName(), friend.getMember().getCountry()));
+            // member_id가 로그인한 사용자일 경우만 처리, 즉 한쪽 방향의 관계만 추가
+            if (friend.getMember().getId().equals(memberId)) {
+                friendResponseDtos.add(new FriendResponseDto(
+                        friend.getFriend().getId(),
+                        friend.getFriend().getEmail(),
+                        friend.getFriend().getNickName(),
+                        friend.getFriend().getCountry()
+                ));
             }
         }
 
@@ -90,29 +96,26 @@ public class FriendService {
                 .sorted(Comparator.comparing(FriendResponseDto::getNickname)) // 닉네임 기준으로 정렬
                 .collect(Collectors.toList());
     }
+
     @Transactional
     public void deleteFriend(Member member, Long targetId) {
-        //삭제할 친구 조회
+        // 삭제할 친구 조회
         Member friend = memberRepository.findById(targetId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // 로그인한 사용자와 삭제할 친구 사이의 친구 관계를 찾음
-        Friend friendRelation = friendRepository.findByMemberAndFriend(member, friend)
-                .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_NOT_FOUND));
-
-        // 친구 관계 삭제
-        friendRepository.deleteByMemberAndFriend(member, friend);
-        friendRepository.deleteByMemberAndFriend(friend, member);
+        // 친구 관계 삭제 (member->friend, friend->member 모두 삭제)
+        friendRepository.deleteAllByMemberAndFriend(member, friend);
     }
 
     @Transactional
     public List<FriendNewsResponseDto> getFriendNewsList(Member member) {
-        // 회원 ID를 기반으로 친구 목록을 조회
-        List<Friend> friends = friendRepository.findAllByMemberId(member.getId());
-        // 친구 목록에서 친구ID를 추출하는 로직
-        List<Long> friendIds = friends.stream().map(Friend::getId).toList();
-        // 회원 ID를 기반으로 해당 친구의 뉴스들을 전부 가져오는 로직
-        List<News> friendsNewsList = newsRepository.findByMemberIdIn(friendIds);
+        Long memberId = member.getId();
+
+        // 친구들의 ID 목록을 가져옴
+        List<Long> friendIds = friendRepository.findFriendIdsByMemberId(memberId);
+
+        // 친구들의 게시물만 가져오되 자신의 게시물은 제외
+        List<News> friendsNewsList = newsRepository.findByMemberIdInAndExcludeOwn(friendIds, memberId);
 
         return friendsNewsList.stream()
                 .sorted(Comparator.comparing(News::getModifiedAt).reversed())

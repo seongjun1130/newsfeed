@@ -1,6 +1,5 @@
 package com.sparta.newsfeedproject.domain.member.service;
 
-import com.sparta.newsfeedproject.domain.comment.repository.CommentRepository;
 import com.sparta.newsfeedproject.domain.config.security.PasswordEncoder;
 import com.sparta.newsfeedproject.domain.exception.CustomException;
 import com.sparta.newsfeedproject.domain.friend.repository.FriendRepository;
