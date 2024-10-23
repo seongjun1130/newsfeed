@@ -32,6 +32,7 @@ public class CommentService {
                 .message("댓글이 생성되었습니다").build();
     }
 
+
     @Transactional
     public CommentResponseDto updateComment(CommentRequestDto commentRequestDto, Long memberId, Long commentId) {
         Member member = memberRepository.findById(memberId).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));

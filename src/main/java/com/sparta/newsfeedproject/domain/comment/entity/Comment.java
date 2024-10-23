@@ -53,7 +53,6 @@ public class Comment extends Auditable {
     // 댓글 내용 수정
     public void updatedata(CommentRequestDto commentRequestDto) {
         this.comment = commentRequestDto.getComment();
-
     }
 
     public boolean isValidateCreator(Long memberId) {
