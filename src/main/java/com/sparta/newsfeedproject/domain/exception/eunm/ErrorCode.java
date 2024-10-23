@@ -26,7 +26,6 @@ public enum ErrorCode {
     NEWS_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 뉴스", 404),  // 뉴스가 존재하지 않을 때
     LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 좋아요", 404),
 
-
     // 409
     ALREADY_EMAIL(HttpStatus.CONFLICT, "이미 사용되는 이메일", 409),
     ALREADY_FRIEND(HttpStatus.CONFLICT, "이미 친구 상태", 409),
