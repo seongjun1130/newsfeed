@@ -39,6 +39,11 @@ public class FriendController {
     }
 
     //친구 삭제 API
+    @DeleteMapping("/{friendId}")
+    public ResponseEntity<String> deleteFriend(@LoginUser Member member , @PathVariable Long friendId) {
+        friendService.deleteFriend(member, friendId);
+        return ResponseEntity.ok("친구가 삭제되었습니다.");
+    }
 
 }
 
