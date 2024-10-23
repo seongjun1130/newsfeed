@@ -1,7 +1,6 @@
 package com.sparta.newsfeedproject.domain.friend.controller;
 
 import com.sparta.newsfeedproject.domain.friend.dto.FriendResponseDto;
-import com.sparta.newsfeedproject.domain.friend.entity.FriendRequest;
 import com.sparta.newsfeedproject.domain.friend.service.FriendService;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
@@ -35,7 +34,7 @@ public class FriendController {
     //친구 목록 조회 API
     @GetMapping
     public ResponseEntity<List<FriendResponseDto>> getFriendList(@LoginUser Member member) {
-        List<FriendResponseDto> friendList = friendService.getFriendList(member);
+        List<FriendResponseDto> friendList = friendService.getAllFriends(member);
         return ResponseEntity.ok(friendList);
     }
 

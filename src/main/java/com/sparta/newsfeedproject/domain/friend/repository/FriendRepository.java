@@ -3,6 +3,8 @@ package com.sparta.newsfeedproject.domain.friend.repository;
 import com.sparta.newsfeedproject.domain.friend.entity.Friend;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,5 +13,6 @@ import java.util.List;
 public interface FriendRepository extends JpaRepository<Friend, Long> {
     boolean existsByMemberAndFriend(Member requester, Member receiver);
 
-    List<Friend> findByMember(Member member);
+    @Query("SELECT f FROM Friend f WHERE f.member.id = :memberId OR f.friend.id = :memberId")
+    List<Friend> findAllByMemberId(@Param("memberId") Long memberId);
 }

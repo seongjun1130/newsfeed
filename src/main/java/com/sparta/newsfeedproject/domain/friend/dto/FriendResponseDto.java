@@ -10,10 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class FriendResponseDto {
-    private Long friendId; //친구의 유저 ID
-    private String nickname; // 친구의 유저 이름
-
-    public static FriendResponseDto fromFriend(Friend friend) {
-        return new FriendResponseDto(friend.getFriend().getId(), friend.getFriend().getNickName());
-    }
+    private String email;
+    private String nickname;
+    private String country;
 }
