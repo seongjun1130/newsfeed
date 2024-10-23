@@ -60,7 +60,7 @@ public class LikeService {
         likeRepository.save(like);
         return LikeCommentResponseDto
                 .builder()
-                .commentId(commentId)
+                .commentId(comment.getId())
                 .message("좋아요를 눌렀습니다.")
                 .build();
     }
