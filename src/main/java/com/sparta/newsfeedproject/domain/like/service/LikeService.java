@@ -45,9 +45,8 @@ public class LikeService {
     }
 
     @Transactional
-    public LikeCommentResponseDto addCommentLike(Long newsId, Long commentId, Long memberId) {
+    public LikeCommentResponseDto addCommentLike(Long commentId, Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        News news = newsRepository.findById(newsId).orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         if (comment.isValidateCreator(member.getId())) {
             throw new CustomException(ErrorCode.CANNOT_LIKE_YOURSELF);
@@ -62,6 +61,30 @@ public class LikeService {
                 .builder()
                 .commentId(comment.getId())
                 .message("좋아요를 눌렀습니다.")
+                .build();
+    }
+
+    public LikeNewsResponseDto removeNewsLike(Long newsId, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        News news = newsRepository.findById(newsId).orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
+        Like like = likeRepository.findByMemberIdAndNewsId(member.getId(), news.getId()).orElseThrow(() -> new CustomException(ErrorCode.LIKE_NOT_FOUND));
+        likeRepository.delete(like);
+        return LikeNewsResponseDto
+                .builder()
+                .newsId(news.getId())
+                .message("좋아요를 취소했습니다.")
+                .build();
+    }
+
+    public LikeCommentResponseDto removeCommentLike(Long commentId, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        Like like = likeRepository.findByMemberIdAndCommentId(member.getId(), comment.getId()).orElseThrow(() -> new CustomException(ErrorCode.LIKE_NOT_FOUND));
+        likeRepository.delete(like);
+        return LikeCommentResponseDto
+                .builder()
+                .commentId(comment.getId())
+                .message("좋아요를 취소했습니다.")
                 .build();
     }
 }
