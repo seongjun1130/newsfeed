@@ -46,15 +46,17 @@ public class NewsController {
             @RequestParam(defaultValue = "1") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "DESC") String sortDir,
-            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
         // 정렬 방향 설정 (DESC, ASC)
         Sort.Direction direction = Sort.Direction.fromString(sortDir);
 
+        // 뉴스 조회 서비스 호출
         Page<NewsPageReadResponseDto> newsPage = newsService.getAllNews(pageNo, pageSize, direction, startDate, endDate);
         return ResponseEntity.ok(newsPage);
     }
+
 
 
     // 뉴스 수정

@@ -42,14 +42,18 @@ public class NewsService {
 
     @Transactional(readOnly = true)
     public Page<NewsPageReadResponseDto> getAllNews(int pageNo, int pageSize, Sort.Direction direction, LocalDate startDate, LocalDate endDate) {
-        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(direction, "modifiedAt"));
+        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(direction, "createdAt"));
 
-        // 기간을 기준으로 뉴스피드 게시물을 검색
-        Page<News> newsPage = newsRepository.findAllByModifiedAtBetween(startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX), pageable);
-
-        // 각 News를 NewsPageReadResponseDto로 변환
-        return newsPage.map(this::mapToReadPageResponseDTO);
+        // startDate와 endDate가 모두 제공된 경우 날짜 필터링 적용
+        if (startDate != null && endDate != null) {
+            return newsRepository.findAllByCreatedAtBetween(startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX), pageable)
+                    .map(this::mapToReadPageResponseDTO);
+        } else {
+            // 날짜 필터링 없이 전체 조회
+            return newsRepository.findAll(pageable).map(this::mapToReadPageResponseDTO);
+        }
     }
+
 
     @Transactional(readOnly = true)
     public NewsReadResponseDTO getNews(Long id) {

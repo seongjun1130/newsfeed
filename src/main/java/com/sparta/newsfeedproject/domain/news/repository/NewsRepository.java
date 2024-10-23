@@ -4,12 +4,10 @@ import com.sparta.newsfeedproject.domain.news.entity.News;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 
-@Repository
 public interface NewsRepository extends JpaRepository<News, Long> {
-
-    Page<News> findAllByModifiedAtBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+    // 날짜 범위로 뉴스 조회
+    Page<News> findAllByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 }
