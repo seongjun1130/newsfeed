@@ -30,8 +30,8 @@ public class NewsController {
     }
 
     // 뉴스 단건 조회 (코멘트 포함)
-    @GetMapping("/{id}")
-    public ResponseEntity<NewsReadResponseDTO> getNews(@PathVariable Long id) {
+    @GetMapping("/{newsid}")
+    public ResponseEntity<NewsReadResponseDTO> getNews(@PathVariable("newsid") Long id) {
         NewsReadResponseDTO newsDTO = newsService.getNews(id);
         return ResponseEntity.ok(newsDTO);
     }
@@ -48,9 +48,9 @@ public class NewsController {
     }
 
     // 뉴스 수정
-    @PutMapping("/{id}")
+    @PutMapping("/{newsid}")
     public ResponseEntity<NewsUpdateResponseDTO> updateNews(
-            @PathVariable Long id,
+            @PathVariable("newsid") Long id,
             @LoginUser Member member,
             @RequestBody NewsUpdateRequestDTO newsDTO) {
         NewsUpdateResponseDTO response = newsService.updateNews(id, member, newsDTO);
@@ -58,8 +58,8 @@ public class NewsController {
     }
 
     // 뉴스 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<NewsDeleteResponseDTO> deleteNews(@PathVariable Long id, @LoginUser Member member) {
+    @DeleteMapping("/{newsid}")
+    public ResponseEntity<NewsDeleteResponseDTO> deleteNews(@PathVariable("newsid") Long id, @LoginUser Member member) {
         NewsDeleteResponseDTO response = newsService.deleteNews(id, member);
         return ResponseEntity.ok(response);
     }

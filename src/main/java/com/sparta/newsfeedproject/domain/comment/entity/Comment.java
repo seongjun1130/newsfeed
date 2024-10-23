@@ -2,7 +2,6 @@ package com.sparta.newsfeedproject.domain.comment.entity;
 
 import com.sparta.newsfeedproject.domain.audit.Auditable;
 import com.sparta.newsfeedproject.domain.exception.dto.CommentRequestDto;
-import com.sparta.newsfeedproject.domain.exception.dto.CommentResponseDto;
 import com.sparta.newsfeedproject.domain.like.entity.Like;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.news.entity.News;

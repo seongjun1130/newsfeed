@@ -13,22 +13,22 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/news/")
+@RequestMapping("/api/news/comment/")
 public class CommentController {
 
     private final CommentService commentService;
 
     //댓글 생성
-    @PostMapping("{id}")
-    public ResponseEntity<CommentResponseDto> creatComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member, @PathVariable("id") Long newsid) {
+    @PostMapping("{commentid}")
+    public ResponseEntity<CommentResponseDto> creatComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member, @PathVariable("commentid") Long newsId) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(commentService.createComment(requestDto, member.getId(),newsid));
+                .body(commentService.createComment(requestDto, member.getId(),newsId));
     }
 
      //댓글 수정하기
-    @PutMapping("{id}")
-    public ResponseEntity<CommentResponseDto> updateComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member,@PathVariable("id") Long newsId) {
+    @PutMapping("{commentid}")
+    public ResponseEntity<CommentResponseDto> updateComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member,@PathVariable("commentid") Long newsId) {
         return ResponseEntity
                 .status(HttpStatus.OK).body(commentService.updateComment(requestDto, member.getId(), newsId));
 
