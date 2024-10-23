@@ -18,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -37,10 +39,16 @@ public class NewsService {
         return mapToCrateResponseDTO(news);
     }
 
+
     @Transactional(readOnly = true)
-    public Page<NewsPageReadResponseDto> getAllNews(int pageNo, int pageSize, Sort.Direction direction) {
-        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(direction, "createdAt"));
-        return newsRepository.findAll(pageable).map(this::mapToReadPageResponseDTO);
+    public Page<NewsPageReadResponseDto> getAllNews(int pageNo, int pageSize, Sort.Direction direction, LocalDate startDate, LocalDate endDate) {
+        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(direction, "modifiedAt"));
+
+        // 기간을 기준으로 뉴스피드 게시물을 검색
+        Page<News> newsPage = newsRepository.findAllByModifiedAtBetween(startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX), pageable);
+
+        // 각 News를 NewsPageReadResponseDto로 변환
+        return newsPage.map(this::mapToReadPageResponseDTO);
     }
 
     @Transactional(readOnly = true)
