@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class NewsCreateResponseDTO {
+public class NewsDeleteResponseDTO {
     private Long id;
     private String message;
 }
