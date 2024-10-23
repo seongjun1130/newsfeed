@@ -48,13 +48,7 @@ public class Comment extends Auditable {
         this.comment = commentRequestDto.getComment();
         this.member = member;
         this.news = news;
-    }
 
-    // 댓글 객체를 CommentResponseDto로 변환
-    public CommentResponseDto to() {
-        return new CommentResponseDto(
-                this.id
-        );
     }
 
     // 댓글 내용 수정
@@ -68,5 +62,6 @@ public class Comment extends Auditable {
         }
         return false;
     }
+
 
 }

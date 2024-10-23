@@ -4,10 +4,7 @@ import com.sparta.newsfeedproject.domain.comment.dto.CommentDTO;
 import com.sparta.newsfeedproject.domain.comment.entity.Comment;
 import com.sparta.newsfeedproject.domain.exception.CustomException;
 import com.sparta.newsfeedproject.domain.exception.eunm.ErrorCode;
-import com.sparta.newsfeedproject.domain.news.dto.NewsCreateRequestDTO;
-import com.sparta.newsfeedproject.domain.news.dto.NewsCreateResponseDTO;
-import com.sparta.newsfeedproject.domain.news.dto.NewsPageReadResponseDto;
-import com.sparta.newsfeedproject.domain.news.dto.NewsReadResponseDTO;
+import com.sparta.newsfeedproject.domain.news.dto.*;
 import com.sparta.newsfeedproject.domain.news.entity.News;
 import com.sparta.newsfeedproject.domain.news.repository.NewsRepository;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
@@ -15,11 +12,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.util.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -28,28 +29,43 @@ public class NewsService {
     private final NewsRepository newsRepository;
 
     @Transactional
-    public NewsCreateResponseDTO createNews(Member author, NewsCreateRequestDTO newsDTO) {
+    public NewsCreateResponseDTO createNews(Member member, NewsCreateRequestDTO newsDTO) {
         News news = News.builder()
-                .member(author)
+                .member(member)
                 .title(newsDTO.getTitle())
                 .content(newsDTO.getContent())
                 .build();
         newsRepository.save(news);
-        return mapToCrateResponseDTO(news);
+        return NewsCreateResponseDTO.builder()
+                .id(news.getId())
+                .message("작성되었습니다")
+                .build();
     }
 
     @Transactional(readOnly = true)
-    public Page<NewsPageReadResponseDto> getAllNews(int pageNo, int pageSize) {
-        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return newsRepository.findAll(pageable).map(this::mapToReadPageResponseDTO);
+    public Page<NewsPageReadResponseDto> getAllNews(int pageNo, int pageSize, LocalDate startDate, LocalDate endDate) {
+        PageRequest pageable;
+
+        if (startDate != null && endDate != null) {
+            // 날짜가 주어졌을 때 modifiedAt 기준으로 정렬
+            pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.DESC, "modifiedAt"));
+            return newsRepository.findAllByModifiedAtBetween(
+                    startDate.atStartOfDay(),
+                    endDate.atTime(23, 59, 59),
+                    pageable).map(this::mapToReadPageResponseDTO);
+        } else {
+            // 날짜가 없을 경우 id 기준으로 내림차순 정렬
+            pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+            return newsRepository.findAll(pageable).map(this::mapToReadPageResponseDTO);
+        }
     }
+
 
     @Transactional(readOnly = true)
     public NewsReadResponseDTO getNews(Long id) {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));  // CustomException 사용
 
-        // Comment 리스트를 DTO로 변환
         List<CommentDTO> commentList = news.getComments().stream()
                 .map(this::mapToCommentDTO)
                 .toList();
@@ -64,11 +80,39 @@ public class NewsService {
                 .build();
     }
 
-    private NewsCreateResponseDTO mapToCrateResponseDTO(News news) {
-        return NewsCreateResponseDTO.builder()
+    @Transactional
+    public NewsUpdateResponseDTO updateNews(Long id, Member member, NewsUpdateRequestDTO newsDTO) {
+        News news = newsRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
+
+        if (!news.getMember().getId().equals(member.getId())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+
+        news.setTitle(newsDTO.getTitle());
+        news.setContent(newsDTO.getContent());
+        newsRepository.save(news);
+
+        return NewsUpdateResponseDTO.builder()
                 .id(news.getId())
-                .title(news.getTitle())
-                .content(news.getContent())
+                .message("수정되었습니다.")
+                .build();
+    }
+
+    @Transactional
+    public NewsDeleteResponseDTO deleteNews(Long id, Member member) {
+        News news = newsRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
+
+        if (!news.getMember().getId().equals(member.getId())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+
+        newsRepository.delete(news);
+
+        return NewsDeleteResponseDTO.builder()
+                .id(news.getId())
+                .message("삭제되었습니다.")
                 .build();
     }
 
@@ -92,4 +136,8 @@ public class NewsService {
                 .build();
     }
 
+
 }
+
+}
+

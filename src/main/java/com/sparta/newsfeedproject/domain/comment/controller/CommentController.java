@@ -20,10 +20,26 @@ public class CommentController {
 
     //댓글 생성
     @PostMapping("{id}")
-    public ResponseEntity<CommentResponseDto> creatComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member, @PathVariable Long id) {
+    public ResponseEntity<CommentResponseDto> creatComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member, @PathVariable("id") Long newsid) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(commentService.createComment(requestDto, member.getId(),id));
+                .body(commentService.createComment(requestDto, member.getId(),newsid));
     }
+
+     //댓글 수정하기
+    @PutMapping("{id}")
+    public ResponseEntity<CommentResponseDto> updateComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member,@PathVariable("id") Long newsId) {
+        return ResponseEntity
+                .status(HttpStatus.OK).body(commentService.updateComment(requestDto, member.getId(), newsId));
+
+    }
+
+     //댓글 삭제하기
+
+    @DeleteMapping("{newsId}/{commentId}")
+    public ResponseEntity<CommentResponseDto> deleteComment(@PathVariable("newsId") Long newsId, @PathVariable("commentId") Long commentId) {
+        return ResponseEntity
+                .status(HttpStatus.OK).body(commentService.deleteComment(newsId, commentId));
+}
 
 }
