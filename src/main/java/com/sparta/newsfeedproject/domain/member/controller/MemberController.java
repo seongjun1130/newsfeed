@@ -40,8 +40,8 @@ public class MemberController {
     }
 
     @DeleteMapping("/profil")
-    public ResponseEntity<Void> deleteMember(@LoginUser Member member,@Valid @RequestBody MemberDeleteRequestDto req) {
-        memberService.deleteMember(member.getId(),req);
+    public ResponseEntity<MemberDeleteResponseDto> deleteMember(@LoginUser Member member, @Valid @RequestBody MemberDeleteRequestDto req) {
+        memberService.deleteMember(member.getId(), req);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
@@ -51,7 +51,7 @@ public class MemberController {
     @GetMapping("/profil")
     //현재 인증된 회원의 정보를 조회
     public ResponseEntity<MemberProfileResponseDto> getMyProfile(@LoginUser Member member) {
-       MemberProfileResponseDto profile = memberService.getMyProfile(member);
+        MemberProfileResponseDto profile = memberService.getMyProfile(member);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(profile);
@@ -59,7 +59,7 @@ public class MemberController {
 
     //타인 프로필 조회
     @GetMapping("/profil/{targetId}")
-    public ResponseEntity<MemberProfileResponseDto> getOtherProfile (@PathVariable("targetId") Long targetId) {
+    public ResponseEntity<MemberProfileResponseDto> getOtherProfile(@PathVariable("targetId") Long targetId) {
         MemberProfileResponseDto profile = memberService.getOtherProfile(targetId);
         return ResponseEntity
                 .status(HttpStatus.OK)
