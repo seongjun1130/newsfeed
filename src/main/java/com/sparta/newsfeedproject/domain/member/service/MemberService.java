@@ -79,7 +79,7 @@ public class MemberService {
 
     //프로필 수정
     @Transactional
-    public MemberProfileResponseDto updateProfile(Member member, ProfileUpdateRequestDto requestDto) {
+    public String updateProfile(Member member, ProfileUpdateRequestDto requestDto) {
         if (!member.isValidPassword(requestDto.getPassword(), passwordEncoder)) {
             throw new CustomException(INVALID_PASSWORD);
         }
@@ -92,7 +92,7 @@ public class MemberService {
         member.update(requestDto.getNickname(), requestDto.getCountry());
         memberRepository.save(member);
 
-        return new MemberProfileResponseDto(member);
+        return "프로필이 수정되었습니다.";
     }
 
     private void isDuplicateMember(MemberSignUpCommand command) {
