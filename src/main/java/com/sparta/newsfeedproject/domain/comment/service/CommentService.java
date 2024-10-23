@@ -14,8 +14,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -29,21 +27,35 @@ public class CommentService {
         News news = newsRepository.findById(newsId).orElseThrow(()->new CustomException(ErrorCode.NEWS_NOT_FOUND));
         Comment comment = Comment.from(commentRequestDto, member,news);
         Comment savedComment = commentRepository.save(comment);
-        return savedComment.to();
+        return CommentResponseDto.builder()
+                .id(comment.getId())
+                .message("댓글이 생성되었습니다").build();
     }
 
-//    @Transactional
-//    public CommentResponseDto updateComment(CommentRequestDto commentRequestDto, Long memberId, Long commentId) {
-//        memberRepository.findById(memberId);
-//        Comment comment = commentRepository.findCommentById(commentId);
-//        comment.updatedata(commentRequestDto);
-//        return new CommentResponseDto(commentId);
-//    }
-//    @Transactional
-//    public void deleteComment(Long memberId, Long commentId) {
-//        memberRepository.findById(memberId);
-//        commentRepository.findCommentById(commentId);
-//        commentRepository.deleteById(commentId);
-//    }
+    @Transactional
+    public CommentResponseDto updateComment(CommentRequestDto commentRequestDto, Long memberId, Long commentId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+        Comment comment = commentRepository.findCommentById(commentId);
+        authorizedArticleAuthor(member,comment);
+        comment.updatedata(commentRequestDto);
+        return CommentResponseDto.builder()
+                .id(comment.getId())
+                .message("댓글이 수정되었습니다").build();
+    }
+    @Transactional
+    public CommentResponseDto deleteComment(Long memberId, Long commentId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+        Comment comment = commentRepository.findCommentById(commentId);
+        authorizedArticleAuthor(member,comment);
+        commentRepository.deleteById(commentId);
+        return CommentResponseDto.builder()
+                .id(comment.getId())
+                .message("댓글이 삭제되었습니다").build();
+    }
+    private void authorizedArticleAuthor(Member member, Comment comment) {
+    if (!member.getId().equals(comment.getMember().getId())) {
+        throw new CustomException(ErrorCode.UNAUTHORIZED_ACTION);  // 권한이 없을 때 예외 발생
+    }
+}
 
 }

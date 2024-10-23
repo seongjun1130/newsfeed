@@ -22,13 +22,14 @@ public class Comment extends Auditable {
     @Column(name = "comment", nullable = false, length = 100)
     private String comment;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "news_id")
     private News news;
+
 
     // 댓글 객체 생성
     public static Comment from(CommentRequestDto commentRequestDto, Member member, News news) {
@@ -41,19 +42,15 @@ public class Comment extends Auditable {
         this.comment = commentRequestDto.getComment();
         this.member = member;
         this.news = news;
+
     }
 
-    // 댓글 객체를 CommentResponseDto로 변환
-    public CommentResponseDto to() {
-        return new CommentResponseDto(
-                this.id
-        );
-    }
     // 댓글 내용 수정
     public void updatedata(CommentRequestDto commentRequestDto){
             this.comment = commentRequestDto.getComment();
 
         }
+
 
 
 }
