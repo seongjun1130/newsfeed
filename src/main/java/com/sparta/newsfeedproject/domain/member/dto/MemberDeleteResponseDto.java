@@ -4,10 +4,10 @@ import lombok.*;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberSignUpResponseDto {
+@Builder
+public class MemberDeleteResponseDto {
     private Long id;
     private String message;
 }
