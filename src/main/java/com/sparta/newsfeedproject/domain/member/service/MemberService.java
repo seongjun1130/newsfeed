@@ -58,12 +58,12 @@ public class MemberService {
     }
 
     //본인 프로필 조회
-    public String getMyProfile (Member member) {
-        return "N/A";
+    public MemberProfileResponseDto getMyProfile (Member member) {
+        return new MemberProfileResponseDto(member);
     }
 
     //타인 프로필 조회
-    public String getOtherProfile(Long targetId) {
+    public MemberProfileResponseDto getOtherProfile(Long targetId) {
         // ID로 회원을 조회
         Member member = memberRepository.findById(targetId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND)); //ErrorCode enum 사용
@@ -74,7 +74,7 @@ public class MemberService {
         }
 
         // Member Entity로부터 MemberProfileResponseDto를 생성
-        return "N/A";
+        return new MemberProfileResponseDto(member);
     }
 
     //프로필 수정

@@ -42,22 +42,29 @@ public class MemberController {
     //본인 프로필 조회
     @GetMapping("/profil")
     //현재 인증된 회원의 정보를 조회
-    public ResponseEntity<String> getMyProfile (@LoginUser Member member) {
-       String message = memberService.getMyProfile(member);
-        return ResponseEntity.ok(message);
+    public ResponseEntity<MemberProfileResponseDto> getMyProfile (@LoginUser Member member) {
+       MemberProfileResponseDto profile = memberService.getMyProfile(member);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(profile);
     }
 
     //타인 프로필 조회
     @GetMapping("/profil/{targetId}")
-    public ResponseEntity<String> getOtherProfile (@PathVariable("targetId") Long targetId) {
-        String message = memberService.getOtherProfile(targetId);
-        return ResponseEntity.ok(message);
+    public ResponseEntity<MemberProfileResponseDto> getOtherProfile (@PathVariable("targetId") Long targetId) {
+        MemberProfileResponseDto profile = memberService.getOtherProfile(targetId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(profile);
     }
 
     //프로필 수정
     @PutMapping("/profil")
-    public ResponseEntity<String> updateProfile(@LoginUser Member member, @Valid @RequestBody ProfileUpdateRequestDto requestDto) {
+    public ResponseEntity<ProfileUpdateResponseDto> updateProfile(@LoginUser Member member, @Valid @RequestBody ProfileUpdateRequestDto requestDto) {
         String message = memberService.updateProfile(member, requestDto);
-        return ResponseEntity.ok(message);
+        ProfileUpdateResponseDto responseDto = new ProfileUpdateResponseDto(member.getId(), message);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseDto);
     }
 }
