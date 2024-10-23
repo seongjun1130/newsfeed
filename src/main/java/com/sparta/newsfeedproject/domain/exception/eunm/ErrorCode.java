@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    // 400
+    // 400 에러
     NOT_NULL(HttpStatus.BAD_REQUEST, "필수 값 누락", 400),
     TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "토큰이 존재하지 않음", 400),
 
@@ -18,6 +18,8 @@ public enum ErrorCode {
     CANNOT_FRIEND_YOURSELF(HttpStatus.UNAUTHORIZED, "본인에게 친구 요청", 401),
     CANNOT_LIKE_YOURSELF(HttpStatus.UNAUTHORIZED, "본인게시물 혹은 댓글 좋아요", 401),
     UNAUTHORIZED_ACTION(HttpStatus.UNAUTHORIZED, "댓글을 편집할 권한이 없음", 401),
+    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "권한 없음", 401), // 추가된 부분
+
 
     // 404 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저", 404),
@@ -27,7 +29,9 @@ public enum ErrorCode {
     NEWS_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 뉴스", 404),  // 뉴스가 존재하지 않을 때
     LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 좋아요", 404),
 
-    // 409
+
+    // 409 에러
+
     ALREADY_EMAIL(HttpStatus.CONFLICT, "이미 사용되는 이메일", 409),
     ALREADY_FRIEND(HttpStatus.CONFLICT, "이미 친구 상태", 409),
     ALREADY_REQUEST(HttpStatus.CONFLICT, "이미 요청 상태", 409),
