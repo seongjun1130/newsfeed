@@ -2,6 +2,7 @@ package com.sparta.newsfeedproject.domain.news.entity;
 
 import com.sparta.newsfeedproject.domain.audit.Auditable;
 import com.sparta.newsfeedproject.domain.comment.entity.Comment;
+import com.sparta.newsfeedproject.domain.like.entity.Like;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,11 +28,20 @@ public class News extends Auditable {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToMany(mappedBy = "news", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "news", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Like> likes;
+
+    public boolean isValidateCreator(Long memberId) {
+        if (this.getMember().getId().equals(memberId)) {
+            return true;
+        }
+        return false;
+    }
 }
