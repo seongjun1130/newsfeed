@@ -34,4 +34,10 @@ public class News extends Auditable {
     @OneToMany(mappedBy = "news", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
+    public boolean isValidateCreator(Long memberId) {
+        if (this.getMember().getId().equals(memberId)) {
+            return true;
+        }
+        return false;
+    }
 }
