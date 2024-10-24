@@ -19,8 +19,8 @@ public class CommentController {
     private final CommentService commentService;
 
     //댓글 생성
-    @PostMapping("{commentid}")
-    public ResponseEntity<CommentResponseDto> creatComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member, @PathVariable("commentid") Long newsId) {
+    @PostMapping("{newsid}")
+    public ResponseEntity<CommentResponseDto> creatComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member, @PathVariable("newsid") Long newsId) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(commentService.createComment(requestDto, member.getId(), newsId));
