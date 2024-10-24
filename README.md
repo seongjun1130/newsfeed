@@ -7,6 +7,7 @@
 - [프로젝트 구성 및 주요 기능](#프로젝트-구성-및-주요-기능)
 - [주요 기술 스택](#주요-기술-스택)
 - [DataBase ERD](#DataBase-ERD)
+- [프로젝트 설명 영상](#프로젝트-설명-영상)
 - [API 명세서 표](#API-명세서-표)
 - [아키텍쳐](#architecture)
   
@@ -154,10 +155,16 @@ dependencies {
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">
 
 ---
+### 프로젝트 설명 영상
+
+[![Watch the video](https://github.com/user-attachments/assets/34d5b9f4-8d9a-442e-9b84-aa55f3e1912a)](https://www.youtube.com/watch?v=zqH5JelLaMo)
+
+
+---
 ### DataBase ERD
 
 
-![image](https://github.com/user-attachments/assets/5d063ab6-4629-40a4-ab4b-ecebf95fc8e8)
+![image](https://github.com/user-attachments/assets/35560db5-ca9a-4936-809c-728655a74732)
 
 
 ---
