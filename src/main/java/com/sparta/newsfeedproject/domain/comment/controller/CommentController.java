@@ -23,23 +23,23 @@ public class CommentController {
     public ResponseEntity<CommentResponseDto> creatComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member, @PathVariable("commentid") Long newsId) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(commentService.createComment(requestDto, member.getId(),newsId));
+                .body(commentService.createComment(requestDto, member.getId(), newsId));
     }
 
-     //댓글 수정하기
+    //댓글 수정하기
     @PutMapping("{commentid}")
-    public ResponseEntity<CommentResponseDto> updateComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member,@PathVariable("commentid") Long newsId) {
+    public ResponseEntity<CommentResponseDto> updateComment(@Valid @RequestBody CommentRequestDto requestDto, @LoginUser Member member, @PathVariable("commentid") Long newsId) {
         return ResponseEntity
                 .status(HttpStatus.OK).body(commentService.updateComment(requestDto, member.getId(), newsId));
 
     }
 
-     //댓글 삭제하기
+    //댓글 삭제하기
 
     @DeleteMapping("{newsId}/{commentId}")
-    public ResponseEntity<CommentResponseDto> deleteComment(@PathVariable("newsId") Long newsId, @PathVariable("commentId") Long commentId) {
+    public ResponseEntity<CommentResponseDto> deleteComment(@LoginUser Member member, @PathVariable("newsId") Long newsId, @PathVariable("commentId") Long commentId) {
         return ResponseEntity
-                .status(HttpStatus.OK).body(commentService.deleteComment(newsId, commentId));
-}
+                .status(HttpStatus.OK).body(commentService.deleteComment(member.getId(), newsId, commentId));
+    }
 
 }
