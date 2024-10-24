@@ -144,7 +144,7 @@ dependencies {
 
 - **Backend**: Spring Boot, Spring Security, Spring Data JPA
 - **Database**: MySQL
-- **Authentication**: JWT (JSON Web Token)
+- **Authentication**: JWT (JSON Web Token), Spring Security
 - **Template Engine**: Thymeleaf
 - **Validation**: Spring Boot Validation
 - **Password Encryption**: Bcrypt
