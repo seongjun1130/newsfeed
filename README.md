@@ -2,9 +2,23 @@
 
 ---
 
+## 목차
+- [개요](#프로젝트-개요)
+- [프로젝트 구성 및 주요 기능](#프로젝트-구성-및-주요-기능)
+- [주요 기술 스택](#주요-기술-스택)
+- [DataBase ERD](#DataBase-ERD)
+- [API 명세서 표](#API-명세서-표)
+- [아키텍쳐](#architecture)
+  
+---
+
 ### 프로젝트 개요
 NewsFedd 프로젝트는 사용자들이 게시물을 작성하고 조회할 수 있는 간단한 뉴스피드 기능을 제공하는 웹 어플리케이션입니다. 사용자는 뉴스 게시물을 작성, 수정, 삭제할 수 있으며, 다른 사용자들의 기수물과 댓글을 볼 수 있습니다. 또한, 기간별로 뉴스피드를 조회할 수 있는 기능을 지원합니다.
 
+- 프로젝트 이름 : NewsFeed Next
+- 프로젝트 지속기간 : 2024.10.18 ~ 2024.10.24
+- 개발언어 : JAVA, SpringBoot, MySQL, GRADLE, JPA, JWT
+- 멤버 : 김명훈 , 박상원 , 조성준 , 박인선 , 소성
 ---
 
 ### **프로젝트 구성 및 주요 기능**
@@ -14,7 +28,7 @@ NewsFedd 프로젝트는 사용자들이 게시물을 작성하고 조회할 수
   
    1-1 **로그인**
     - 로그인 (POST `/api/member/login`)
-    - JWT 토큰을 통한 인증 및 권한 부여
+    - Spring Security + JWT 토큰을 통한 인증 작업 진행
   
    1-2 **프로필 수정**
     - 제공된 정보에 한 해서 자신의 프로필을 수정할 수 있습니다.
@@ -24,24 +38,29 @@ NewsFedd 프로젝트는 사용자들이 게시물을 작성하고 조회할 수
     - 자신과 타인의 프로필 정보를 조회할 수 있습니다.
     - 타인 프로필 조회(GET `/api/member/profil/{id}`)
     - 본인 프로필 조회(GET `/api/member/profil`)
+      
+   1-4 **회원 탈퇴**
+    - 회원 탈퇴시 회원의 개인정보를 익명화 처리 후 댓글을 제외한 회원의 연관기능을 삭제합니다.
+    - (DELTELE `/api/member/profil`)
 
 2. **뉴스 피드 관리**
     - 게시물 작성 (POST `/api/news`)
     - 게시물 전체 조회 (GET `/api/news`)
-    - 게시물 단건 조회 (GET `/api/news/{id}`)
+    - 게시물 단건 조회 (GET `/api/news/{newsid}`)
     - 게시물 수정 (PUT `/api/news/{id}`)
     - 게시물 삭제 (DELETE `/api/news/{id}`)
 
 3. **친구 관리**
-    - 친구 요청 (POST `/api/member/friends/{id}`)
-    - 친구 수락 (POST `/api/member/friends`)
-    - 친구 삭제 (DELETE `/api/member/friends/{id}`)
+    - 친구 요청 (POST `/api/member/friends/request/{targetId}`)
+    - 친구 수락 (POST `/api/member/friends/accept/{targetId}`)
+    - 친구 삭제 (DELETE `/api/member/friends/{targetId}`)
     - 친구 목록 조회 (GET `/api/member/friends`)
+    - 친구 게시글 최신순 조회 (GET `/api/member/friends/news`)
 
 4. **댓글 기능**
-    - 댓글 작성 (POST `/api/news/{id}/comment`)
-    - 댓글 수정 (PUT `/api/news/{id}/comment`)
-    - 댓글 삭제 (DELETE `/api/news/{newsId}/{commentId}`)
+    - 댓글 작성 (POST `/api/news/comment/{newsId}`)
+    - 댓글 수정 (PUT `/api/news/comment/{commentId}`)
+    - 댓글 삭제 (DELETE `/api/news/comment/{newsId}/{commentId}`)
 
 ---
 
@@ -132,6 +151,15 @@ dependencies {
 - **Mapping**: MapStruct
 - **Testing**: JUnit, Spring Security Test
 
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">
+
+---
+### DataBase ERD
+
+
+![image](https://github.com/user-attachments/assets/5d063ab6-4629-40a4-ab4b-ecebf95fc8e8)
+
+
 ---
 
 ### API 명세서 표
@@ -161,9 +189,154 @@ dependencies {
 | 조성준  | 완료     | POST     | 댓글 좋아요 누르기   | /api/news/like/{newsid}/{commentid}      | {newsid} : newsId, {commentid} : commentId                                                                | { ”commentId” : 1, ”message” : “좋아요를 눌렀습니다.” }                                                  | **Authorization: Bearer {token}, Content-Type: application/json**      | **Content-Type: application/json**                                    | 200(성공), 401(자신의 댓글), 404(참조불가 댓글), 409(이미 좋아요 상태)   |
 | 조성준  | 완료     | DELETE   | 게시물 좋아요 취소   | /api/news/like/{newsid}                 | {id} : newsId                                                                                             | { ”newsId” : 1, ”message” : “좋아요를 취소했습니다.” }                                                    | **Authorization: Bearer {token}, Content-Type: application/json**      | **Content-Type: application/json**                                    | 200(성공), 404(참조불가 뉴스)                                           |
 | 조성준  | 완료     | DELETE   | 댓글 좋아요 취소     | /api/news/like/{newsid}/{commentid}      | {newsid} : newsId, {commentid} : commentId                                                                | { ”commentId” : 1, ”message” : “좋아요를 취소했습니다.” }                                                | **Authorization: Bearer {token}, Content-Type: application/json**      | **Content-Type: application/json**                                    | 200(성공), 404(참조불가 댓글)                                           |
-| 박인선  | 완료     | POST     | 댓글 작성           | /api/news/comment/{commentId}            | { ”comment” : “댓글 입니다.” }                                                                             | { ”commentId” : 1, ”message” : “댓글을 생성했습니다.” }                                                  | **Authorization: Bearer {token}, Content-Type: application/json**      |                                                              | 201(작성성공)                                                           |
+| 박인선  | 완료     | POST     | 댓글 작성           | /api/news/comment/{newsId}            | { ”comment” : “댓글 입니다.” }                                                                             | { ”commentId” : 1, ”message” : “댓글을 생성했습니다.” }                                                  | **Authorization: Bearer {token}, Content-Type: application/json**      |                                                              | 201(작성성공)                                                           |
 | 박인선  | 완료     | UPDATE   | 댓글 수정           | /api/news/comment/{commentId}            | { ”comment” : “댓글 수정 입니다.” }                                                                        | { ”commentId” : 1, ”message” : “댓글을 수정했습니다.” }                                                  | **Authorization: Bearer {token}, Content-Type: application/json**      |                                                              | 200(댓글 수정), 401(권한 없음)                                          |
 | 박인선  | 완료     | DELETE   | 댓글 삭제           | /api/news/comment/{newsId}/{commentId}   | {newsid} : newsId, {commentid} : commentId                                                                | { ”commentId” : 1, ”message” : “댓글을 삭제했습니다.” }                                                  | **Authorization: Bearer {token}, Content-Type: application/json**      |                                                              | 200(댓글 삭제), 401(권한 없음)                                           |
+
+---
+
+### Architecture
+```
+📦 
+├─ .gitattributes
+├─ .gitignore
+├─ README.md
+├─ build.gradle
+├─ gradle
+│  └─ wrapper
+│     ├─ gradle-wrapper.jar
+│     └─ gradle-wrapper.properties
+├─ gradlew
+├─ gradlew.bat
+├─ settings.gradle
+└─ src
+   ├─ main
+   │  ├─ java
+   │  │  └─ com
+   │  │     └─ sparta
+   │  │        └─ newsfeedproject
+   │  │           ├─ NewsFeedProjectApplication.java
+   │  │           └─ domain
+   │  │              ├─ audit
+   │  │              │  └─ Auditable.java
+   │  │              ├─ comment : 댓글관련 API
+   │  │              │  ├─ controller
+   │  │              │  │  └─ CommentController.java
+   │  │              │  ├─ dto
+   │  │              │  │  └─ CommentDTO.java
+   │  │              │  ├─ entity
+   │  │              │  │  └─ Comment.java
+   │  │              │  ├─ repository
+   │  │              │  │  └─ CommentRepository.java
+   │  │              │  └─ service
+   │  │              │     └─ CommentService.java
+   │  │              ├─ config : 로그인 인증 관련 설정
+   │  │              │  ├─ WebConfig.java
+   │  │              │  └─ security
+   │  │              │     ├─ PasswordEncoder.java
+   │  │              │     └─ WebSecurityConfig.java
+   │  │              ├─ exception : 공통예외 처리 API
+   │  │              │  ├─ CustomException.java
+   │  │              │  ├─ UnAuthorizationException.java
+   │  │              │  ├─ controller
+   │  │              │  │  └─ GlobalExceptionHandler.java
+   │  │              │  ├─ dto
+   │  │              │  │  ├─ CommentRequestDto.java
+   │  │              │  │  ├─ CommentResponseDto.java
+   │  │              │  │  └─ ErrorDto.java
+   │  │              │  └─ eunm
+   │  │              │     └─ ErrorCode.java
+   │  │              ├─ filter : 로그인 인증 관련 Filter
+   │  │              │  ├─ AuthFilter.java
+   │  │              │  └─ AuthenticationExceptionHandlerFilter.java
+   │  │              ├─ friend : 친구관계 설정 관련 API
+   │  │              │  ├─ controller
+   │  │              │  │  └─ FriendController.java
+   │  │              │  ├─ dto
+   │  │              │  │  ├─ FriendNewsResponseDto.java
+   │  │              │  │  ├─ FriendResponseDto.java
+   │  │              │  │  └─ MessageResponseDto.java
+   │  │              │  ├─ entity
+   │  │              │  │  ├─ Friend.java
+   │  │              │  │  └─ FriendRequest.java
+   │  │              │  ├─ repository
+   │  │              │  │  ├─ FriendRepository.java
+   │  │              │  │  └─ FriendRequestRepository.java
+   │  │              │  └─ service
+   │  │              │     └─ FriendService.java
+   │  │              ├─ jwt : JWT 관리를 위한 Util 클래스
+   │  │              │  └─ JwtUtil.java
+   │  │              ├─ like : 좋아요 관련 API
+   │  │              │  ├─ controller
+   │  │              │  │  └─ LikeController.java
+   │  │              │  ├─ dto
+   │  │              │  │  ├─ LikeCommentResponseDto.java
+   │  │              │  │  └─ LikeNewsResponseDto.java
+   │  │              │  ├─ entity
+   │  │              │  │  └─ Like.java
+   │  │              │  ├─ repository
+   │  │              │  │  └─ LikeRepository.java
+   │  │              │  └─ service
+   │  │              │     └─ LikeService.java
+   │  │              ├─ member : 유저 관련 API
+   │  │              │  ├─ client : 유저 거주국가 검증을 위한 외부 API
+   │  │              │  │  └─ CountryService.java
+   │  │              │  ├─ command
+   │  │              │  │  └─ MemberSignUpCommand.java
+   │  │              │  ├─ controller
+   │  │              │  │  └─ MemberController.java
+   │  │              │  ├─ dto
+   │  │              │  │  ├─ MemberDeleteRequestDto.java
+   │  │              │  │  ├─ MemberDeleteResponseDto.java
+   │  │              │  │  ├─ MemberLoginRequestDto.java
+   │  │              │  │  ├─ MemberLoginResponseDto.java
+   │  │              │  │  ├─ MemberProfileResponseDto.java
+   │  │              │  │  ├─ MemberSignUpRequestDto.java
+   │  │              │  │  ├─ MemberSignUpResponseDto.java
+   │  │              │  │  ├─ ProfileUpdateRequestDto.java
+   │  │              │  │  └─ ProfileUpdateResponseDto.java
+   │  │              │  ├─ entity
+   │  │              │  │  └─ Member.java
+   │  │              │  ├─ eunm
+   │  │              │  │  └─ MembershipStatus.java
+   │  │              │  ├─ repository
+   │  │              │  │  └─ MemberRepository.java
+   │  │              │  ├─ resolver : 로그인한 유저를 받아오기위한 resolver
+   │  │              │  │  ├─ LoginUserResolver.java
+   │  │              │  │  └─ util
+   │  │              │  │     └─ LoginUser.java
+   │  │              │  └─ service
+   │  │              │     └─ MemberService.java
+   │  │              ├─ news : 뉴스피드 관련 API
+   │  │              │  ├─ controller
+   │  │              │  │  └─ NewsController.java
+   │  │              │  ├─ dto
+   │  │              │  │  ├─ NewsCreateRequestDTO.java
+   │  │              │  │  ├─ NewsCreateResponseDTO.java
+   │  │              │  │  ├─ NewsDeleteResponseDTO.java
+   │  │              │  │  ├─ NewsPageReadResponseDto.java
+   │  │              │  │  ├─ NewsReadResponseDTO.java
+   │  │              │  │  ├─ NewsUpdateRequestDTO.java
+   │  │              │  │  └─ NewsUpdateResponseDTO.java
+   │  │              │  ├─ entity
+   │  │              │  │  └─ News.java
+   │  │              │  ├─ repository
+   │  │              │  │  └─ NewsRepository.java
+   │  │              │  └─ service
+   │  │              │     └─ NewsService.java
+   │  │              └─ validator : 유저 거주국가 검증을 위한 Custom validator
+   │  │                 ├─ Country.java
+   │  │                 └─ CountryValidator.java
+   │  └─ resources
+   │     └─ application.properties
+   └─ test
+      └─ java
+         └─ com
+            └─ sparta
+               └─ newsfeedproject
+                  └─ NewsFeedProjectApplicationTests.java
+```
+©generated by [Project Tree Generator](https://woochanleee.github.io/project-tree-generator)
 
 ---
 
