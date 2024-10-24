@@ -163,9 +163,7 @@ dependencies {
 ---
 ### DataBase ERD
 
-
-![image](https://github.com/user-attachments/assets/35560db5-ca9a-4936-809c-728655a74732)
-
+![image](https://github.com/user-attachments/assets/94eb70f6-c698-47b0-8f93-cf437fd5b817)
 
 ---
 
