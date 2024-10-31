@@ -6,8 +6,10 @@ import com.sparta.newsfeedproject.domain.exception.CustomException;
 import com.sparta.newsfeedproject.domain.exception.eunm.ErrorCode;
 import com.sparta.newsfeedproject.domain.like.dto.LikeCommentResponseDto;
 import com.sparta.newsfeedproject.domain.like.dto.LikeNewsResponseDto;
-import com.sparta.newsfeedproject.domain.like.entity.Like;
-import com.sparta.newsfeedproject.domain.like.repository.LikeRepository;
+import com.sparta.newsfeedproject.domain.like.entity.CommentLike;
+import com.sparta.newsfeedproject.domain.like.entity.NewsLike;
+import com.sparta.newsfeedproject.domain.like.repository.CommentLikeRepository;
+import com.sparta.newsfeedproject.domain.like.repository.NewsLikeRepository;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
 import com.sparta.newsfeedproject.domain.news.entity.News;
@@ -19,7 +21,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LikeService {
-    private final LikeRepository likeRepository;
+    private final NewsLikeRepository newsLikeRepository;
+    private final CommentLikeRepository commentLikeRepository;
     private final MemberRepository memberRepository;
     private final NewsRepository newsRepository;
     private final CommentRepository commentRepository;
@@ -31,12 +34,12 @@ public class LikeService {
         if (news.isValidateCreator(member.getId())) {
             throw new CustomException(ErrorCode.CANNOT_LIKE_YOURSELF);
         }
-        if (likeRepository.existsByMemberIdAndNewsId(member.getId(), news.getId())) {
+        if (newsLikeRepository.existsByMemberIdAndNewsId(member.getId(), news.getId())) {
             throw new CustomException(ErrorCode.ALREADY_LIKE);
         }
-        Like like = new Like();
-        like.addLikeNews(member, news);
-        likeRepository.save(like);
+        NewsLike newsLike = new NewsLike();
+        newsLike.addLikeNews(member, news);
+        newsLikeRepository.save(newsLike);
         return LikeNewsResponseDto
                 .builder()
                 .newsId(news.getId())
@@ -51,12 +54,12 @@ public class LikeService {
         if (comment.isValidateCreator(member.getId())) {
             throw new CustomException(ErrorCode.CANNOT_LIKE_YOURSELF);
         }
-        if (likeRepository.existsByMemberIdAndCommentId(member.getId(), comment.getId())) {
+        if (commentLikeRepository.existsByMemberIdAndCommentId(member.getId(), comment.getId())) {
             throw new CustomException(ErrorCode.ALREADY_LIKE);
         }
-        Like like = new Like();
-        like.addLikeComment(member, comment);
-        likeRepository.save(like);
+        CommentLike commentLike = new CommentLike();
+        commentLike.addLikeComment(member, comment);
+        commentLikeRepository.save(commentLike);
         return LikeCommentResponseDto
                 .builder()
                 .commentId(comment.getId())
@@ -67,8 +70,8 @@ public class LikeService {
     public LikeNewsResponseDto removeNewsLike(Long newsId, Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         News news = newsRepository.findById(newsId).orElseThrow(() -> new CustomException(ErrorCode.NEWS_NOT_FOUND));
-        Like like = likeRepository.findByMemberIdAndNewsId(member.getId(), news.getId()).orElseThrow(() -> new CustomException(ErrorCode.LIKE_NOT_FOUND));
-        likeRepository.delete(like);
+        NewsLike newsLike = newsLikeRepository.findByMemberIdAndNewsId(member.getId(), news.getId()).orElseThrow(() -> new CustomException(ErrorCode.LIKE_NOT_FOUND));
+        newsLikeRepository.delete(newsLike);
         return LikeNewsResponseDto
                 .builder()
                 .newsId(news.getId())
@@ -79,8 +82,8 @@ public class LikeService {
     public LikeCommentResponseDto removeCommentLike(Long commentId, Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-        Like like = likeRepository.findByMemberIdAndCommentId(member.getId(), comment.getId()).orElseThrow(() -> new CustomException(ErrorCode.LIKE_NOT_FOUND));
-        likeRepository.delete(like);
+        CommentLike commentLike = commentLikeRepository.findByMemberIdAndCommentId(member.getId(), comment.getId()).orElseThrow(() -> new CustomException(ErrorCode.LIKE_NOT_FOUND));
+        commentLikeRepository.delete(commentLike);
         return LikeCommentResponseDto
                 .builder()
                 .commentId(comment.getId())

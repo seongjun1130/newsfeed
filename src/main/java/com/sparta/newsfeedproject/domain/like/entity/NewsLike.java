@@ -1,43 +1,32 @@
 package com.sparta.newsfeedproject.domain.like.entity;
 
-import com.sparta.newsfeedproject.domain.comment.entity.Comment;
-import com.sparta.newsfeedproject.domain.comment.entity.Comment;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.news.entity.News;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter
 @Getter
+@Setter
 @Builder
 @Entity
-@Table(name = "likes")
+@Table(name = "news_likes")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Like {
+public class NewsLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "news_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "news_id", nullable = false)
     private News news;
-
-    @ManyToOne
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
 
     public void addLikeNews(Member member, News news) {
         this.member = member;
         this.news = news;
-    }
-
-    public void addLikeComment(Member member, Comment comment) {
-        this.member = member;
-        this.comment = comment;
     }
 }

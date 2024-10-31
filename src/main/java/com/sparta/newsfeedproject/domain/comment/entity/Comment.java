@@ -1,13 +1,14 @@
 package com.sparta.newsfeedproject.domain.comment.entity;
 
 import com.sparta.newsfeedproject.domain.audit.Auditable;
-import com.sparta.newsfeedproject.domain.exception.dto.CommentRequestDto;
-import com.sparta.newsfeedproject.domain.like.entity.Like;
+import com.sparta.newsfeedproject.domain.comment.dto.CommentRequestDto;
+import com.sparta.newsfeedproject.domain.like.entity.CommentLike;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.news.entity.News;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -33,7 +34,7 @@ public class Comment extends Auditable {
     private News news;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Like> likes;
+    private List<CommentLike> likes = new ArrayList<>();
 
     // 댓글 객체 생성
     public static Comment from(CommentRequestDto commentRequestDto, Member member, News news) {

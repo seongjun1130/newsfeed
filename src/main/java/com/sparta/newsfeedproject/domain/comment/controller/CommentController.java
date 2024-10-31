@@ -1,8 +1,8 @@
 package com.sparta.newsfeedproject.domain.comment.controller;
 
 import com.sparta.newsfeedproject.domain.comment.service.CommentService;
-import com.sparta.newsfeedproject.domain.exception.dto.CommentRequestDto;
-import com.sparta.newsfeedproject.domain.exception.dto.CommentResponseDto;
+import com.sparta.newsfeedproject.domain.comment.dto.CommentRequestDto;
+import com.sparta.newsfeedproject.domain.comment.dto.CommentResponseDto;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.resolver.util.LoginUser;
 import jakarta.validation.Valid;

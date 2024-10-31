@@ -5,7 +5,8 @@ import com.sparta.newsfeedproject.domain.exception.CustomException;
 import com.sparta.newsfeedproject.domain.friend.repository.FriendRepository;
 import com.sparta.newsfeedproject.domain.friend.repository.FriendRequestRepository;
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
-import com.sparta.newsfeedproject.domain.like.repository.LikeRepository;
+import com.sparta.newsfeedproject.domain.like.repository.CommentLikeRepository;
+import com.sparta.newsfeedproject.domain.like.repository.NewsLikeRepository;
 import com.sparta.newsfeedproject.domain.member.command.MemberSignUpCommand;
 import com.sparta.newsfeedproject.domain.member.dto.*;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
@@ -27,7 +28,8 @@ public class MemberService {
     private final NewsRepository newsRepository;
     private final FriendRepository friendRepository;
     private final FriendRequestRepository friendRequestRepository;
-    private final LikeRepository likeRepository;
+    private final NewsLikeRepository newsLikeRepository;
+    private final CommentLikeRepository commentLikeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -114,7 +116,8 @@ public class MemberService {
         }
         member.anonymizeMember();
         memberRepository.save(member);
-        likeRepository.deleteByMemberId(member.getId());
+        newsLikeRepository.deleteByMemberId(member.getId());
+        commentLikeRepository.deleteByMemberId(member.getId());
         newsRepository.deleteByMemberId(member.getId());
         friendRepository.deleteAllByMemberOrFriend(member.getId());
         friendRequestRepository.deleteByReceiverIdOrRequesterId(member.getId());

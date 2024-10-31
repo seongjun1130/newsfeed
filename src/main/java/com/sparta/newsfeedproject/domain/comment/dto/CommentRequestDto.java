@@ -1,7 +1,5 @@
-package com.sparta.newsfeedproject.domain.exception.dto;
+package com.sparta.newsfeedproject.domain.comment.dto;
 
-import com.sparta.newsfeedproject.domain.member.entity.Member;
-import com.sparta.newsfeedproject.domain.news.entity.News;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
